@@ -89,23 +89,59 @@ extern "C" {
 bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 
 
-/* Defines for PWM_0 */
-#define PWM_0_INST                                                         TIMG6
-#define PWM_0_INST_IRQHandler                                   TIMG6_IRQHandler
-#define PWM_0_INST_INT_IRQN                                     (TIMG6_INT_IRQn)
-#define PWM_0_INST_CLK_FREQ                                             80000000
+/* Defines for PWM_TB6612 */
+#define PWM_TB6612_INST                                                    TIMG6
+#define PWM_TB6612_INST_IRQHandler                              TIMG6_IRQHandler
+#define PWM_TB6612_INST_INT_IRQN                                (TIMG6_INT_IRQn)
+#define PWM_TB6612_INST_CLK_FREQ                                        80000000
 /* GPIO defines for channel 0 */
-#define GPIO_PWM_0_C0_PORT                                                 GPIOB
-#define GPIO_PWM_0_C0_PIN                                          DL_GPIO_PIN_6
-#define GPIO_PWM_0_C0_IOMUX                                      (IOMUX_PINCM23)
-#define GPIO_PWM_0_C0_IOMUX_FUNC                     IOMUX_PINCM23_PF_TIMG6_CCP0
-#define GPIO_PWM_0_C0_IDX                                    DL_TIMER_CC_0_INDEX
+#define GPIO_PWM_TB6612_C0_PORT                                            GPIOB
+#define GPIO_PWM_TB6612_C0_PIN                                     DL_GPIO_PIN_6
+#define GPIO_PWM_TB6612_C0_IOMUX                                 (IOMUX_PINCM23)
+#define GPIO_PWM_TB6612_C0_IOMUX_FUNC                IOMUX_PINCM23_PF_TIMG6_CCP0
+#define GPIO_PWM_TB6612_C0_IDX                               DL_TIMER_CC_0_INDEX
 /* GPIO defines for channel 1 */
-#define GPIO_PWM_0_C1_PORT                                                 GPIOB
-#define GPIO_PWM_0_C1_PIN                                          DL_GPIO_PIN_7
-#define GPIO_PWM_0_C1_IOMUX                                      (IOMUX_PINCM24)
-#define GPIO_PWM_0_C1_IOMUX_FUNC                     IOMUX_PINCM24_PF_TIMG6_CCP1
-#define GPIO_PWM_0_C1_IDX                                    DL_TIMER_CC_1_INDEX
+#define GPIO_PWM_TB6612_C1_PORT                                            GPIOB
+#define GPIO_PWM_TB6612_C1_PIN                                     DL_GPIO_PIN_7
+#define GPIO_PWM_TB6612_C1_IOMUX                                 (IOMUX_PINCM24)
+#define GPIO_PWM_TB6612_C1_IOMUX_FUNC                IOMUX_PINCM24_PF_TIMG6_CCP1
+#define GPIO_PWM_TB6612_C1_IDX                               DL_TIMER_CC_1_INDEX
+
+
+
+/* Defines for UART_JY901 */
+#define UART_JY901_INST                                                    UART1
+#define UART_JY901_INST_FREQUENCY                                       40000000
+#define UART_JY901_INST_IRQHandler                              UART1_IRQHandler
+#define UART_JY901_INST_INT_IRQN                                  UART1_INT_IRQn
+#define GPIO_UART_JY901_RX_PORT                                            GPIOA
+#define GPIO_UART_JY901_TX_PORT                                            GPIOA
+#define GPIO_UART_JY901_RX_PIN                                     DL_GPIO_PIN_9
+#define GPIO_UART_JY901_TX_PIN                                     DL_GPIO_PIN_8
+#define GPIO_UART_JY901_IOMUX_RX                                 (IOMUX_PINCM20)
+#define GPIO_UART_JY901_IOMUX_TX                                 (IOMUX_PINCM19)
+#define GPIO_UART_JY901_IOMUX_RX_FUNC                  IOMUX_PINCM20_PF_UART1_RX
+#define GPIO_UART_JY901_IOMUX_TX_FUNC                  IOMUX_PINCM19_PF_UART1_TX
+#define UART_JY901_BAUD_RATE                                              (9600)
+#define UART_JY901_IBRD_40_MHZ_9600_BAUD                                   (260)
+#define UART_JY901_FBRD_40_MHZ_9600_BAUD                                    (27)
+/* Defines for UART_BT */
+#define UART_BT_INST                                                       UART2
+#define UART_BT_INST_FREQUENCY                                          40000000
+#define UART_BT_INST_IRQHandler                                 UART2_IRQHandler
+#define UART_BT_INST_INT_IRQN                                     UART2_INT_IRQn
+#define GPIO_UART_BT_RX_PORT                                               GPIOB
+#define GPIO_UART_BT_TX_PORT                                               GPIOB
+#define GPIO_UART_BT_RX_PIN                                       DL_GPIO_PIN_16
+#define GPIO_UART_BT_TX_PIN                                       DL_GPIO_PIN_17
+#define GPIO_UART_BT_IOMUX_RX                                    (IOMUX_PINCM33)
+#define GPIO_UART_BT_IOMUX_TX                                    (IOMUX_PINCM43)
+#define GPIO_UART_BT_IOMUX_RX_FUNC                     IOMUX_PINCM33_PF_UART2_RX
+#define GPIO_UART_BT_IOMUX_TX_FUNC                     IOMUX_PINCM43_PF_UART2_TX
+#define UART_BT_BAUD_RATE                                                 (9600)
+#define UART_BT_IBRD_40_MHZ_9600_BAUD                                      (260)
+#define UART_BT_FBRD_40_MHZ_9600_BAUD                                       (27)
+
 
 
 
@@ -134,6 +170,26 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 /* Defines for MOTOR_B_IN2: GPIOB.3 with pinCMx 16 on package pin 51 */
 #define MOTOR_DIR_MOTOR_B_IN2_PIN                                (DL_GPIO_PIN_3)
 #define MOTOR_DIR_MOTOR_B_IN2_IOMUX                              (IOMUX_PINCM16)
+/* Port definition for Pin Group ENCODER */
+#define ENCODER_PORT                                                     (GPIOB)
+
+/* Defines for MOTOR_A_A: GPIOB.4 with pinCMx 17 on package pin 52 */
+// pins affected by this interrupt request:["MOTOR_A_A","MOTOR_B_A"]
+#define ENCODER_INT_IRQN                                        (GPIOB_INT_IRQn)
+#define ENCODER_INT_IIDX                        (DL_INTERRUPT_GROUP1_IIDX_GPIOB)
+#define ENCODER_MOTOR_A_A_IIDX                               (DL_GPIO_IIDX_DIO4)
+#define ENCODER_MOTOR_A_A_PIN                                    (DL_GPIO_PIN_4)
+#define ENCODER_MOTOR_A_A_IOMUX                                  (IOMUX_PINCM17)
+/* Defines for MOTOR_A_B: GPIOB.12 with pinCMx 29 on package pin 64 */
+#define ENCODER_MOTOR_A_B_PIN                                   (DL_GPIO_PIN_12)
+#define ENCODER_MOTOR_A_B_IOMUX                                  (IOMUX_PINCM29)
+/* Defines for MOTOR_B_A: GPIOB.11 with pinCMx 28 on package pin 63 */
+#define ENCODER_MOTOR_B_A_IIDX                              (DL_GPIO_IIDX_DIO11)
+#define ENCODER_MOTOR_B_A_PIN                                   (DL_GPIO_PIN_11)
+#define ENCODER_MOTOR_B_A_IOMUX                                  (IOMUX_PINCM28)
+/* Defines for MOTOR_B_B: GPIOB.5 with pinCMx 18 on package pin 53 */
+#define ENCODER_MOTOR_B_B_PIN                                    (DL_GPIO_PIN_5)
+#define ENCODER_MOTOR_B_B_IOMUX                                  (IOMUX_PINCM18)
 
 
 /* clang-format on */
@@ -144,7 +200,9 @@ void SYSCFG_DL_GPIO_init(void);
 void SYSCFG_DL_SYSCTL_init(void);
 
 bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
-void SYSCFG_DL_PWM_0_init(void);
+void SYSCFG_DL_PWM_TB6612_init(void);
+void SYSCFG_DL_UART_JY901_init(void);
+void SYSCFG_DL_UART_BT_init(void);
 
 
 bool SYSCFG_DL_saveConfiguration(void);

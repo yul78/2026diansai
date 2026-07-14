@@ -1,6 +1,10 @@
 #include "tb6612.h"
-
 #include "ti_msp_dl_config.h"
+
+/*
+    图形化配置说明
+    .syscfg中TIMER_PWM命名为PWM_TB6612
+*/
 
 #define TB6612_PWM_PERIOD 4000U
 #define TB6612_PWM_MAX    (TB6612_PWM_PERIOD - 1U)
@@ -83,11 +87,11 @@ static void tb6612_get_channel_config(TB6612_MotorChannel channel,
     if (channel == TB6612_MOTOR_CHANNEL_A) {
         *in1Pin = MOTOR_DIR_MOTOR_A_IN1_PIN;
         *in2Pin = MOTOR_DIR_MOTOR_A_IN2_PIN;
-        *ccIndex = GPIO_PWM_0_C0_IDX;
+        *ccIndex = GPIO_PWM_TB6612_C0_IDX;
     } else {
         *in1Pin = MOTOR_DIR_MOTOR_B_IN1_PIN;
         *in2Pin = MOTOR_DIR_MOTOR_B_IN2_PIN;
-        *ccIndex = GPIO_PWM_0_C1_IDX;
+        *ccIndex = GPIO_PWM_TB6612_C1_IDX;
     }
 }
 
@@ -114,7 +118,7 @@ static void tb6612_apply_motor(const TB6612_Motor *motor)
         DL_GPIO_clearPins(MOTOR_DIR_PORT, in1Pin | in2Pin);
     }
 
-    DL_TimerG_setCaptureCompareValue(PWM_0_INST,tb6612_clamp_speed(motor, output_speed), ccIndex);
+    DL_TimerG_setCaptureCompareValue(PWM_TB6612_INST,tb6612_clamp_speed(motor, output_speed), ccIndex);
 }
 
 /**
@@ -127,7 +131,7 @@ void TB6612_Init(void)
 
     TB6612_SetMotor(&TB6612_MotorA, 0);
     TB6612_SetMotor(&TB6612_MotorB, 0);
-    DL_TimerG_startCounter(PWM_0_INST);
+    DL_TimerG_startCounter(PWM_TB6612_INST);
 }
 
 /**

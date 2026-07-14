@@ -11,10 +11,15 @@ GEN_CMDS__FLAG := -Wl,-l"./device_linker.cmd"
 
 ORDERED_OBJS += \
 "./DL_OLED.o" \
+"./app_jy901.o" \
+"./bluetooth.o" \
+"./bsp_jy901.o" \
 "./delay.o" \
 "./empty.o" \
 "./ti_msp_dl_config.o" \
 "./startup_mspm0g350x_ticlang.o" \
+"./encoder.o" \
+"./mid_jy901.o" \
 "./tb6612.o" \
 $(GEN_CMDS__FLAG) \
 -Wl,-ldevice.cmd.genlibs \
@@ -132,15 +137,15 @@ all: $(OBJS) $(GEN_CMDS)
 # Tool invocations
 project.out: $(OBJS) $(GEN_CMDS)
 	@echo 'Arm Linker - building target: "$@"'
-	"E:/2026diansai/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/bin/tiarmclang.exe" @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -gdwarf-3 -Wall -Wl,-m"project.map" -Wl,-i"E:/2026diansai/mspm0_sdk_2_10_00_04/source" -Wl,-i"E:/My_MCU_Project/MSPM0G3507/2025car1.0/project" -Wl,-i"E:/My_MCU_Project/MSPM0G3507/2025car1.0/project/Debug/syscfg" -Wl,-i"E:/2026diansai/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/lib" -Wl,--diag_wrap=off -Wl,--display_error_number -Wl,--warn_sections -Wl,--xml_link_info="project_linkInfo.xml" -Wl,--rom_model -o "project.out" $(ORDERED_OBJS)
+	"E:/2026diansai/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/bin/tiarmclang.exe" @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O0 -gdwarf-3 -Wall -Wl,-m"project.map" -Wl,-i"E:/2026diansai/mspm0_sdk_2_10_00_04/source" -Wl,-i"E:/My_MCU_Project/MSPM0G3507/2025car1.0/project" -Wl,-i"E:/My_MCU_Project/MSPM0G3507/2025car1.0/project/Debug/syscfg" -Wl,-i"E:/2026diansai/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/lib" -Wl,--diag_wrap=off -Wl,--display_error_number -Wl,--warn_sections -Wl,--xml_link_info="project_linkInfo.xml" -Wl,--rom_model -o "project.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
 # Other Targets
 clean:
 	-$(RM) $(GEN_MISC_FILES__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "DL_OLED.o" "delay.o" "empty.o" "ti_msp_dl_config.o" "startup_mspm0g350x_ticlang.o" "tb6612.o" 
-	-$(RM) "DL_OLED.d" "delay.d" "empty.d" "ti_msp_dl_config.d" "startup_mspm0g350x_ticlang.d" "tb6612.d" 
+	-$(RM) "DL_OLED.o" "app_jy901.o" "bluetooth.o" "bsp_jy901.o" "delay.o" "empty.o" "ti_msp_dl_config.o" "startup_mspm0g350x_ticlang.o" "encoder.o" "mid_jy901.o" "tb6612.o" 
+	-$(RM) "DL_OLED.d" "app_jy901.d" "bluetooth.d" "bsp_jy901.d" "delay.d" "empty.d" "ti_msp_dl_config.d" "startup_mspm0g350x_ticlang.d" "encoder.d" "mid_jy901.d" "tb6612.d" 
 	-@echo ' '
 
 .PHONY: all clean dependents
