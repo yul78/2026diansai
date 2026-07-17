@@ -146,6 +146,22 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 
 
 
+/* Port definition for Pin Group Buzzer */
+#define Buzzer_PORT                                                      (GPIOB)
+
+/* Defines for num1: GPIOB.8 with pinCMx 25 on package pin 60 */
+#define Buzzer_num1_PIN                                          (DL_GPIO_PIN_8)
+#define Buzzer_num1_IOMUX                                        (IOMUX_PINCM25)
+/* Port definition for Pin Group AJ */
+#define AJ_PORT                                                          (GPIOA)
+
+/* Defines for AJ1: GPIOA.26 with pinCMx 59 on package pin 30 */
+// pins affected by this interrupt request:["AJ1"]
+#define AJ_INT_IRQN                                             (GPIOA_INT_IRQn)
+#define AJ_INT_IIDX                             (DL_INTERRUPT_GROUP1_IIDX_GPIOA)
+#define AJ_AJ1_IIDX                                         (DL_GPIO_IIDX_DIO26)
+#define AJ_AJ1_PIN                                              (DL_GPIO_PIN_26)
+#define AJ_AJ1_IOMUX                                             (IOMUX_PINCM59)
 /* Port definition for Pin Group OLED */
 #define OLED_PORT                                                        (GPIOA)
 
@@ -190,6 +206,38 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 /* Defines for MOTOR_B_B: GPIOB.5 with pinCMx 18 on package pin 53 */
 #define ENCODER_MOTOR_B_B_PIN                                    (DL_GPIO_PIN_5)
 #define ENCODER_MOTOR_B_B_IOMUX                                  (IOMUX_PINCM18)
+/* Defines for XJ1: GPIOA.27 with pinCMx 60 on package pin 31 */
+#define XUNJI_XJ1_PORT                                                   (GPIOA)
+#define XUNJI_XJ1_PIN                                           (DL_GPIO_PIN_27)
+#define XUNJI_XJ1_IOMUX                                          (IOMUX_PINCM60)
+/* Defines for XJ2: GPIOB.27 with pinCMx 58 on package pin 29 */
+#define XUNJI_XJ2_PORT                                                   (GPIOB)
+#define XUNJI_XJ2_PIN                                           (DL_GPIO_PIN_27)
+#define XUNJI_XJ2_IOMUX                                          (IOMUX_PINCM58)
+/* Defines for XJ3: GPIOB.25 with pinCMx 56 on package pin 27 */
+#define XUNJI_XJ3_PORT                                                   (GPIOB)
+#define XUNJI_XJ3_PIN                                           (DL_GPIO_PIN_25)
+#define XUNJI_XJ3_IOMUX                                          (IOMUX_PINCM56)
+/* Defines for XJ4: GPIOA.24 with pinCMx 54 on package pin 25 */
+#define XUNJI_XJ4_PORT                                                   (GPIOA)
+#define XUNJI_XJ4_PIN                                           (DL_GPIO_PIN_24)
+#define XUNJI_XJ4_IOMUX                                          (IOMUX_PINCM54)
+/* Defines for XJ5: GPIOB.24 with pinCMx 52 on package pin 23 */
+#define XUNJI_XJ5_PORT                                                   (GPIOB)
+#define XUNJI_XJ5_PIN                                           (DL_GPIO_PIN_24)
+#define XUNJI_XJ5_IOMUX                                          (IOMUX_PINCM52)
+/* Defines for XJ6: GPIOB.22 with pinCMx 50 on package pin 21 */
+#define XUNJI_XJ6_PORT                                                   (GPIOB)
+#define XUNJI_XJ6_PIN                                           (DL_GPIO_PIN_22)
+#define XUNJI_XJ6_IOMUX                                          (IOMUX_PINCM50)
+/* Defines for XJ7: GPIOB.20 with pinCMx 48 on package pin 19 */
+#define XUNJI_XJ7_PORT                                                   (GPIOB)
+#define XUNJI_XJ7_PIN                                           (DL_GPIO_PIN_20)
+#define XUNJI_XJ7_IOMUX                                          (IOMUX_PINCM48)
+/* Defines for XJ8: GPIOB.18 with pinCMx 44 on package pin 15 */
+#define XUNJI_XJ8_PORT                                                   (GPIOB)
+#define XUNJI_XJ8_PIN                                           (DL_GPIO_PIN_18)
+#define XUNJI_XJ8_IOMUX                                          (IOMUX_PINCM44)
 
 
 /* clang-format on */

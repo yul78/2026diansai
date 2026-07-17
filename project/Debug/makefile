@@ -20,6 +20,7 @@ ORDERED_OBJS += \
 "./startup_mspm0g350x_ticlang.o" \
 "./encoder.o" \
 "./mid_jy901.o" \
+"./myxunji.o" \
 "./tb6612.o" \
 $(GEN_CMDS__FLAG) \
 -Wl,-ldevice.cmd.genlibs \
@@ -144,8 +145,8 @@ project.out: $(OBJS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(GEN_MISC_FILES__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "DL_OLED.o" "app_jy901.o" "bluetooth.o" "bsp_jy901.o" "delay.o" "empty.o" "ti_msp_dl_config.o" "startup_mspm0g350x_ticlang.o" "encoder.o" "mid_jy901.o" "tb6612.o" 
-	-$(RM) "DL_OLED.d" "app_jy901.d" "bluetooth.d" "bsp_jy901.d" "delay.d" "empty.d" "ti_msp_dl_config.d" "startup_mspm0g350x_ticlang.d" "encoder.d" "mid_jy901.d" "tb6612.d" 
+	-$(RM) "DL_OLED.o" "app_jy901.o" "bluetooth.o" "bsp_jy901.o" "delay.o" "empty.o" "ti_msp_dl_config.o" "startup_mspm0g350x_ticlang.o" "encoder.o" "mid_jy901.o" "myxunji.o" "tb6612.o" 
+	-$(RM) "DL_OLED.d" "app_jy901.d" "bluetooth.d" "bsp_jy901.d" "delay.d" "empty.d" "ti_msp_dl_config.d" "startup_mspm0g350x_ticlang.d" "encoder.d" "mid_jy901.d" "myxunji.d" "tb6612.d" 
 	-@echo ' '
 
 .PHONY: all clean dependents

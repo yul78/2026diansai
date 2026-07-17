@@ -19,6 +19,7 @@ C_SRCS += \
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/msp/m0p/startup_system_files/ticlang/startup_mspm0g350x_ticlang.c \
 ../encoder.c \
 ../mid_jy901.c \
+../myxunji.c \
 ../tb6612.c 
 
 GEN_CMDS += \
@@ -40,6 +41,7 @@ C_DEPS += \
 ./startup_mspm0g350x_ticlang.d \
 ./encoder.d \
 ./mid_jy901.d \
+./myxunji.d \
 ./tb6612.d 
 
 GEN_OPTS += \
@@ -56,6 +58,7 @@ OBJS += \
 ./startup_mspm0g350x_ticlang.o \
 ./encoder.o \
 ./mid_jy901.o \
+./myxunji.o \
 ./tb6612.o 
 
 GEN_MISC_FILES += \
@@ -74,6 +77,7 @@ OBJS__QUOTED += \
 "startup_mspm0g350x_ticlang.o" \
 "encoder.o" \
 "mid_jy901.o" \
+"myxunji.o" \
 "tb6612.o" 
 
 GEN_MISC_FILES__QUOTED += \
@@ -92,6 +96,7 @@ C_DEPS__QUOTED += \
 "startup_mspm0g350x_ticlang.d" \
 "encoder.d" \
 "mid_jy901.d" \
+"myxunji.d" \
 "tb6612.d" 
 
 GEN_FILES__QUOTED += \
@@ -110,6 +115,7 @@ C_SRCS__QUOTED += \
 "E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/msp/m0p/startup_system_files/ticlang/startup_mspm0g350x_ticlang.c" \
 "../encoder.c" \
 "../mid_jy901.c" \
+"../myxunji.c" \
 "../tb6612.c" 
 
 SYSCFG_SRCS__QUOTED += \

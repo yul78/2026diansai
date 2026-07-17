@@ -118,7 +118,8 @@ static void tb6612_apply_motor(const TB6612_Motor *motor)
         DL_GPIO_clearPins(MOTOR_DIR_PORT, in1Pin | in2Pin);
     }
 
-    DL_TimerG_setCaptureCompareValue(PWM_TB6612_INST,tb6612_clamp_speed(motor, output_speed), ccIndex);
+    int32_t clamp_speed = tb6612_clamp_speed(motor, output_speed);
+    DL_TimerG_setCaptureCompareValue(PWM_TB6612_INST,clamp_speed, ccIndex);
 }
 
 /**

@@ -1,0 +1,44 @@
+// {
+//     "configurations": [
+//         {
+//             "name": "Win32",
+//             "includePath": [
+//                 "${workspaceFolder}/**"
+//             ],
+//             "defines": [
+//                 "_DEBUG",
+//                 "UNICODE",
+//                 "_UNICODE"
+//             ],
+//             "windowsSdkVersion": "10.0.22621.0",
+//             "compilerPath": "cl.exe",
+//             "cStandard": "c11",
+//             "cppStandard": "c++11",
+//             "intelliSenseMode": "windows-msvc-x64"
+//         }
+//     ],
+//     "version": 4
+// }
+
+{
+    "configurations": [
+        {
+            "name": "MSPM0G3507_Config",
+            "includePath": [
+                "E:/2026diansai/mspm0_sdk_2_10_00_04/source",
+                "E:/2026diansai/mspm0_sdk_2_10_00_04/source/third_party/CMSIS/Core/Include",
+                "E:/2026diansai/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/include",
+                "${workspaceFolder}",
+                "E:/My_MCU_code/TI/MSPM0G3507/EXTI/project/Debug"
+            ],
+            "defines": [
+                "__MSPM0G3507__"
+            ],
+            "compilerPath": "E:/2026diansai/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/bin/tiarmclang.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "intelliSenseMode": "windows-clang-arm"
+        }
+    ],
+    "version": 4
+}

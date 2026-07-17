@@ -19,8 +19,21 @@ void Encoder_Init(void)
     NVIC_EnableIRQ(ENCODER_INT_IRQN);
 }
 
+
+
+int32_t Encoder_GetCountA(void)
+{
+    return EncoderA.count;
+}
+
+int32_t Encoder_GetCountB(void)
+{
+    return EncoderB.count;
+}
+
 void GROUP1_IRQHandler(void)
 {
+    
     uint32_t status = DL_GPIO_getEnabledInterruptStatus(ENCODER_PORT,
         ENCODER_MOTOR_A_A_PIN | ENCODER_MOTOR_B_A_PIN);
 
@@ -41,14 +54,4 @@ void GROUP1_IRQHandler(void)
     }
 
     DL_GPIO_clearInterruptStatus(ENCODER_PORT, status);
-}
-
-int32_t Encoder_GetCountA(void)
-{
-    return EncoderA.count;
-}
-
-int32_t Encoder_GetCountB(void)
-{
-    return EncoderB.count;
 }
