@@ -1,28 +1,33 @@
-  {  
-    "permissions": {
-      "allow": [
-        "Bash(apply_patch *)",
-        "Skill(superpowers:brainstorming)",
-        "Skill(superpowers:writing-plans)",
-        "Skill(superpowers:using-git-worktrees)",
-        "Skill(superpowers:test-driven-development)",
-        "Skill(superpowers:executing-plans)",
-        "Skill(superpowers:subagent-driven-development)",
-        "Bash(E:/2026diansai/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/bin/tiarmclang.exe *)",
-        "Bash(make *)",
-        "Skill(superpowers:verification-before-completion)",
-        "Skill(superpowers:using-superpowers)",
-        "Skill(superpowers:systematic-debugging)",
-        "Bash(gcc *)",
-        "Bash(clang *)",
-        "Skill(update-config)"
-      ]
-    },
-    "skillOverrides": {
-      "superpowers:using-superpowers": "off",
-      "superpowers:brainstorming": "off",
-      "superpowers:systematic-debugging": "off",
-      "superpowers:test-driven-development": "off",
-      "superpowers:verification-before-completion": "off"
+{
+  "permissions": {
+    "allow": [
+      "Bash(apply_patch *)",
+      "Skill(superpowers:brainstorming)",
+      "Skill(superpowers:writing-plans)",
+      "Skill(superpowers:using-git-worktrees)",
+      "Skill(superpowers:test-driven-development)",
+      "Skill(superpowers:executing-plans)",
+      "Skill(superpowers:subagent-driven-development)",
+      "Bash(E:/2026diansai/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/bin/tiarmclang.exe *)",
+      "Bash(make *)",
+      "Skill(superpowers:verification-before-completion)",
+      "Skill(superpowers:using-superpowers)",
+      "Skill(superpowers:systematic-debugging)",
+      "Bash(gcc *)",
+      "Bash(clang *)",
+      "Skill(update-config)",
+      "Bash(python *)",
+      "Bash(e:/My_MCU_Project/MSPM0G3507/2025car1.0/project/Debug/host_test/myxunji_pid_track_test.exe *)",
+      "Bash(\"/e/My_MCU_Project/MSPM0G3507/2025car1.0/project/Debug/host_test/myxunji_pid_track_test.exe\")",
+      "Bash(git restore *)",
+      "Bash(git status *)",
+      "Bash(git update-index *)",
+      "Bash(git checkout-index *)"
+    ]
+  },
+  "claude_code": {
+    "plugins_override": {
+      "superpowers@superpowers-marketplace": false
     }
   }
+}

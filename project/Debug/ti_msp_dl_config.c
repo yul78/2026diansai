@@ -53,10 +53,12 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     /* Module-Specific Initializations*/
     SYSCFG_DL_SYSCTL_init();
     SYSCFG_DL_PWM_TB6612_init();
+    SYSCFG_DL_TIMER_TICK_init();
     SYSCFG_DL_UART_JY901_init();
     SYSCFG_DL_UART_BT_init();
     /* Ensure backup structures have no valid state */
 	gPWM_TB6612Backup.backupRdy 	= false;
+
 
 
 }
@@ -88,12 +90,14 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_GPIO_reset(GPIOA);
     DL_GPIO_reset(GPIOB);
     DL_TimerG_reset(PWM_TB6612_INST);
+    DL_TimerG_reset(TIMER_TICK_INST);
     DL_UART_Main_reset(UART_JY901_INST);
     DL_UART_Main_reset(UART_BT_INST);
 
     DL_GPIO_enablePower(GPIOA);
     DL_GPIO_enablePower(GPIOB);
     DL_TimerG_enablePower(PWM_TB6612_INST);
+    DL_TimerG_enablePower(TIMER_TICK_INST);
     DL_UART_Main_enablePower(UART_JY901_INST);
     DL_UART_Main_enablePower(UART_BT_INST);
     delay_cycles(POWER_STARTUP_DELAY);
@@ -120,10 +124,6 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
         GPIO_UART_BT_IOMUX_RX, GPIO_UART_BT_IOMUX_RX_FUNC);
 
     DL_GPIO_initDigitalOutput(Buzzer_num1_IOMUX);
-
-    DL_GPIO_initDigitalInputFeatures(AJ_AJ1_IOMUX,
-		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_UP,
-		 DL_GPIO_HYSTERESIS_DISABLE, DL_GPIO_WAKEUP_DISABLE);
 
     DL_GPIO_initDigitalOutput(OLED_OLED_SCL_IOMUX);
 
@@ -185,13 +185,32 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
 		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_NONE,
 		 DL_GPIO_HYSTERESIS_DISABLE, DL_GPIO_WAKEUP_DISABLE);
 
+    DL_GPIO_initDigitalInputFeatures(AJ_AJ1_IOMUX,
+		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_UP,
+		 DL_GPIO_HYSTERESIS_DISABLE, DL_GPIO_WAKEUP_DISABLE);
+
+    DL_GPIO_initDigitalInputFeatures(AJ_AJ2_IOMUX,
+		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_UP,
+		 DL_GPIO_HYSTERESIS_DISABLE, DL_GPIO_WAKEUP_DISABLE);
+
+    DL_GPIO_initDigitalInputFeatures(AJ_AJ3_IOMUX,
+		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_UP,
+		 DL_GPIO_HYSTERESIS_DISABLE, DL_GPIO_WAKEUP_DISABLE);
+
+    DL_GPIO_initDigitalInputFeatures(AJ_AJ4_IOMUX,
+		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_UP,
+		 DL_GPIO_HYSTERESIS_DISABLE, DL_GPIO_WAKEUP_DISABLE);
+
     DL_GPIO_clearPins(GPIOA, OLED_OLED_SCL_PIN |
 		OLED_OLED_SDA_PIN);
     DL_GPIO_enableOutput(GPIOA, OLED_OLED_SCL_PIN |
 		OLED_OLED_SDA_PIN);
-    DL_GPIO_setUpperPinsPolarity(GPIOA, DL_GPIO_PIN_26_EDGE_FALL);
-    DL_GPIO_clearInterruptStatus(GPIOA, AJ_AJ1_PIN);
-    DL_GPIO_enableInterrupt(GPIOA, AJ_AJ1_PIN);
+    DL_GPIO_setUpperPinsPolarity(GPIOA, DL_GPIO_PIN_26_EDGE_FALL |
+		DL_GPIO_PIN_25_EDGE_FALL);
+    DL_GPIO_clearInterruptStatus(GPIOA, AJ_AJ1_PIN |
+		AJ_AJ3_PIN);
+    DL_GPIO_enableInterrupt(GPIOA, AJ_AJ1_PIN |
+		AJ_AJ3_PIN);
     DL_GPIO_clearPins(GPIOB, Buzzer_num1_PIN |
 		MOTOR_DIR_MOTOR_A_IN1_PIN |
 		MOTOR_DIR_MOTOR_A_IN2_PIN |
@@ -205,10 +224,16 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
     DL_GPIO_setLowerPinsPolarity(GPIOB, DL_GPIO_PIN_4_EDGE_RISE |
 		DL_GPIO_PIN_12_EDGE_FALL |
 		DL_GPIO_PIN_11_EDGE_RISE);
+    DL_GPIO_setUpperPinsPolarity(GPIOB, DL_GPIO_PIN_26_EDGE_FALL |
+		DL_GPIO_PIN_23_EDGE_FALL);
     DL_GPIO_clearInterruptStatus(GPIOB, ENCODER_MOTOR_A_A_PIN |
-		ENCODER_MOTOR_B_A_PIN);
+		ENCODER_MOTOR_B_A_PIN |
+		AJ_AJ2_PIN |
+		AJ_AJ4_PIN);
     DL_GPIO_enableInterrupt(GPIOB, ENCODER_MOTOR_A_A_PIN |
-		ENCODER_MOTOR_B_A_PIN);
+		ENCODER_MOTOR_B_A_PIN |
+		AJ_AJ2_PIN |
+		AJ_AJ4_PIN);
 
 }
 
@@ -320,6 +345,8 @@ SYSCONFIG_WEAK void SYSCFG_DL_SYSCTL_init(void)
     }
     DL_SYSCTL_setULPCLKDivider(DL_SYSCTL_ULPCLK_DIV_2);
     DL_SYSCTL_setMCLKSource(SYSOSC, HSCLK, DL_SYSCTL_HSCLK_SOURCE_SYSPLL);
+    /* INT_GROUP1 Priority */
+    NVIC_SetPriority(GPIOB_INT_IRQn, 0);
 
 }
 
@@ -372,6 +399,46 @@ SYSCONFIG_WEAK void SYSCFG_DL_PWM_TB6612_init(void) {
 
     
     DL_TimerG_setCCPDirection(PWM_TB6612_INST , DL_TIMER_CC0_OUTPUT | DL_TIMER_CC1_OUTPUT );
+
+
+}
+
+
+
+/*
+ * Timer clock configuration to be sourced by BUSCLK /  (40000000 Hz)
+ * timerClkFreq = (timerClkSrc / (timerClkDivRatio * (timerClkPrescale + 1)))
+ *   500000 Hz = 40000000 Hz / (1 * (79 + 1))
+ */
+static const DL_TimerG_ClockConfig gTIMER_TICKClockConfig = {
+    .clockSel    = DL_TIMER_CLOCK_BUSCLK,
+    .divideRatio = DL_TIMER_CLOCK_DIVIDE_1,
+    .prescale    = 79U,
+};
+
+/*
+ * Timer load value (where the counter starts from) is calculated as (timerPeriod * timerClockFreq) - 1
+ * TIMER_TICK_INST_LOAD_VALUE = (1ms * 500000 Hz) - 1
+ */
+static const DL_TimerG_TimerConfig gTIMER_TICKTimerConfig = {
+    .period     = TIMER_TICK_INST_LOAD_VALUE,
+    .timerMode  = DL_TIMER_TIMER_MODE_PERIODIC_UP,
+    .startTimer = DL_TIMER_STOP,
+};
+
+SYSCONFIG_WEAK void SYSCFG_DL_TIMER_TICK_init(void) {
+
+    DL_TimerG_setClockConfig(TIMER_TICK_INST,
+        (DL_TimerG_ClockConfig *) &gTIMER_TICKClockConfig);
+
+    DL_TimerG_initTimerMode(TIMER_TICK_INST,
+        (DL_TimerG_TimerConfig *) &gTIMER_TICKTimerConfig);
+    DL_TimerG_enableInterrupt(TIMER_TICK_INST , DL_TIMERG_INTERRUPT_LOAD_EVENT);
+	NVIC_SetPriority(TIMER_TICK_INST_INT_IRQN, 0);
+    DL_TimerG_enableClock(TIMER_TICK_INST);
+
+
+
 
 
 }

@@ -1,6 +1,6 @@
 # FIXED
 
-empty.o: ../empty.c \
+key.o: ../key.c ../key.h \
  ti_msp_dl_config.h \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/msp/msp.h \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/DeviceFamily.h \
@@ -83,10 +83,8 @@ empty.o: ../empty.c \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/dl_vref.h \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/dl_wwdt.h \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_interrupt.h \
- E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_systick.h \
- ../tb6612.h ../encoder.h ../DL_OLED.h ../app_jy901.h ../bsp_jy901.h \
- ../mid_jy901.h ../bluetooth.h ../myxunji.h ../delay.h ../interrupt.h \
- ../key.h
+ E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_systick.h
+../key.h:
 ti_msp_dl_config.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/msp/msp.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/DeviceFamily.h:
@@ -170,14 +168,3 @@ E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/dl_vref.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/dl_wwdt.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_interrupt.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_systick.h:
-../tb6612.h:
-../encoder.h:
-../DL_OLED.h:
-../app_jy901.h:
-../bsp_jy901.h:
-../mid_jy901.h:
-../bluetooth.h:
-../myxunji.h:
-../delay.h:
-../interrupt.h:
-../key.h:

@@ -7,6 +7,7 @@
 #define XUNJI_LEFT_MASK              0x07U
 #define XUNJI_CENTER_MASK            0x38U
 #define XUNJI_RIGHT_MASK             0xE0U
+//以下下是PID的参数
 #define MYXUNJI_PID_KP               180
 #define MYXUNJI_PID_KI               15
 #define MYXUNJI_PID_KD               120
@@ -93,7 +94,6 @@ static void Xunji_Run_PreTurn(int16_t* left_speed, int16_t* right_speed)
     xunji_state = XUNJI_STATE_TURN_LEFT;
 }
 
-
 void Xunji_Task(int16_t* left_speed, int16_t* right_speed)
 {  
 
@@ -119,9 +119,6 @@ void Xunji_Task(int16_t* left_speed, int16_t* right_speed)
                 xunji_state = XUNJI_STATE_TRACK;
                 xunji_corner_latched = 0U;
             }
-
-            
-
             return;
         default:
             xunji_state = XUNJI_STATE_TRACK;

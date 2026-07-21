@@ -109,6 +109,14 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 
 
 
+/* Defines for TIMER_TICK */
+#define TIMER_TICK_INST                                                  (TIMG0)
+#define TIMER_TICK_INST_IRQHandler                              TIMG0_IRQHandler
+#define TIMER_TICK_INST_INT_IRQN                                (TIMG0_INT_IRQn)
+#define TIMER_TICK_INST_LOAD_VALUE                                        (499U)
+
+
+
 /* Defines for UART_JY901 */
 #define UART_JY901_INST                                                    UART1
 #define UART_JY901_INST_FREQUENCY                                       40000000
@@ -152,16 +160,6 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 /* Defines for num1: GPIOB.8 with pinCMx 25 on package pin 60 */
 #define Buzzer_num1_PIN                                          (DL_GPIO_PIN_8)
 #define Buzzer_num1_IOMUX                                        (IOMUX_PINCM25)
-/* Port definition for Pin Group AJ */
-#define AJ_PORT                                                          (GPIOA)
-
-/* Defines for AJ1: GPIOA.26 with pinCMx 59 on package pin 30 */
-// pins affected by this interrupt request:["AJ1"]
-#define AJ_INT_IRQN                                             (GPIOA_INT_IRQn)
-#define AJ_INT_IIDX                             (DL_INTERRUPT_GROUP1_IIDX_GPIOA)
-#define AJ_AJ1_IIDX                                         (DL_GPIO_IIDX_DIO26)
-#define AJ_AJ1_PIN                                              (DL_GPIO_PIN_26)
-#define AJ_AJ1_IOMUX                                             (IOMUX_PINCM59)
 /* Port definition for Pin Group OLED */
 #define OLED_PORT                                                        (GPIOA)
 
@@ -190,9 +188,10 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 #define ENCODER_PORT                                                     (GPIOB)
 
 /* Defines for MOTOR_A_A: GPIOB.4 with pinCMx 17 on package pin 52 */
-// pins affected by this interrupt request:["MOTOR_A_A","MOTOR_B_A"]
-#define ENCODER_INT_IRQN                                        (GPIOB_INT_IRQn)
-#define ENCODER_INT_IIDX                        (DL_INTERRUPT_GROUP1_IIDX_GPIOB)
+// groups represented: ["AJ","ENCODER"]
+// pins affected: ["AJ2","AJ4","MOTOR_A_A","MOTOR_B_A"]
+#define GPIO_MULTIPLE_GPIOB_INT_IRQN                            (GPIOB_INT_IRQn)
+#define GPIO_MULTIPLE_GPIOB_INT_IIDX            (DL_INTERRUPT_GROUP1_IIDX_GPIOB)
 #define ENCODER_MOTOR_A_A_IIDX                               (DL_GPIO_IIDX_DIO4)
 #define ENCODER_MOTOR_A_A_PIN                                    (DL_GPIO_PIN_4)
 #define ENCODER_MOTOR_A_A_IOMUX                                  (IOMUX_PINCM17)
@@ -238,6 +237,29 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 #define XUNJI_XJ8_PORT                                                   (GPIOB)
 #define XUNJI_XJ8_PIN                                           (DL_GPIO_PIN_18)
 #define XUNJI_XJ8_IOMUX                                          (IOMUX_PINCM44)
+/* Defines for AJ1: GPIOA.26 with pinCMx 59 on package pin 30 */
+#define AJ_AJ1_PORT                                                      (GPIOA)
+// pins affected by this interrupt request:["AJ1","AJ3"]
+#define AJ_GPIOA_INT_IRQN                                       (GPIOA_INT_IRQn)
+#define AJ_GPIOA_INT_IIDX                       (DL_INTERRUPT_GROUP1_IIDX_GPIOA)
+#define AJ_AJ1_IIDX                                         (DL_GPIO_IIDX_DIO26)
+#define AJ_AJ1_PIN                                              (DL_GPIO_PIN_26)
+#define AJ_AJ1_IOMUX                                             (IOMUX_PINCM59)
+/* Defines for AJ2: GPIOB.26 with pinCMx 57 on package pin 28 */
+#define AJ_AJ2_PORT                                                      (GPIOB)
+#define AJ_AJ2_IIDX                                         (DL_GPIO_IIDX_DIO26)
+#define AJ_AJ2_PIN                                              (DL_GPIO_PIN_26)
+#define AJ_AJ2_IOMUX                                             (IOMUX_PINCM57)
+/* Defines for AJ3: GPIOA.25 with pinCMx 55 on package pin 26 */
+#define AJ_AJ3_PORT                                                      (GPIOA)
+#define AJ_AJ3_IIDX                                         (DL_GPIO_IIDX_DIO25)
+#define AJ_AJ3_PIN                                              (DL_GPIO_PIN_25)
+#define AJ_AJ3_IOMUX                                             (IOMUX_PINCM55)
+/* Defines for AJ4: GPIOB.23 with pinCMx 51 on package pin 22 */
+#define AJ_AJ4_PORT                                                      (GPIOB)
+#define AJ_AJ4_IIDX                                         (DL_GPIO_IIDX_DIO23)
+#define AJ_AJ4_PIN                                              (DL_GPIO_PIN_23)
+#define AJ_AJ4_IOMUX                                             (IOMUX_PINCM51)
 
 
 /* clang-format on */
@@ -249,6 +271,7 @@ void SYSCFG_DL_SYSCTL_init(void);
 
 bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 void SYSCFG_DL_PWM_TB6612_init(void);
+void SYSCFG_DL_TIMER_TICK_init(void);
 void SYSCFG_DL_UART_JY901_init(void);
 void SYSCFG_DL_UART_BT_init(void);
 

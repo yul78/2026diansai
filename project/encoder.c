@@ -1,6 +1,8 @@
 #include "encoder.h"
 #include "ti_msp_dl_config.h"
 
+extern uint64_t g_systick_ms;
+
 /*
     图形化配置说明
     GPIO组命名为ENCODER，电机A编码器连接的两个GPIO命名为 MOTOR_A_A 和 MOTOR_A_B
@@ -16,10 +18,8 @@ void Encoder_Init(void)
     EncoderA.polarity = 1;
     EncoderB.count = 0;
     EncoderB.polarity = 1;
-    NVIC_EnableIRQ(ENCODER_INT_IRQN);
+    NVIC_EnableIRQ(GPIO_MULTIPLE_GPIOB_INT_IRQN);
 }
-
-
 
 int32_t Encoder_GetCountA(void)
 {
@@ -31,27 +31,11 @@ int32_t Encoder_GetCountB(void)
     return EncoderB.count;
 }
 
-void GROUP1_IRQHandler(void)
+void Encoder_GetSpeeds(int32_t *speedA, int32_t *speedB)
 {
-    
-    uint32_t status = DL_GPIO_getEnabledInterruptStatus(ENCODER_PORT,
-        ENCODER_MOTOR_A_A_PIN | ENCODER_MOTOR_B_A_PIN);
+    *speedA = EncoderA.count;
+    *speedB = EncoderB.count;
 
-    if (status & ENCODER_MOTOR_A_A_PIN) {
-        if (DL_GPIO_readPins(ENCODER_PORT, ENCODER_MOTOR_A_B_PIN)) {
-            EncoderA.count -= EncoderA.polarity;
-        } else {
-            EncoderA.count += EncoderA.polarity;
-        }
-    }
-
-    if (status & ENCODER_MOTOR_B_A_PIN) {
-        if (DL_GPIO_readPins(ENCODER_PORT, ENCODER_MOTOR_B_B_PIN)) {
-            EncoderB.count -= EncoderB.polarity;
-        } else {
-            EncoderB.count += EncoderB.polarity;
-        }
-    }
-
-    DL_GPIO_clearInterruptStatus(ENCODER_PORT, status);
+    EncoderA.count = 0;
+    EncoderB.count = 0;
 }

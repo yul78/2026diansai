@@ -13,11 +13,14 @@ C_SRCS += \
 ../app_jy901.c \
 ../bluetooth.c \
 ../bsp_jy901.c \
+../control.c \
 ../delay.c \
 ../empty.c \
 ./ti_msp_dl_config.c \
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/msp/m0p/startup_system_files/ticlang/startup_mspm0g350x_ticlang.c \
 ../encoder.c \
+../interrupt.c \
+../key.c \
 ../mid_jy901.c \
 ../myxunji.c \
 ../tb6612.c 
@@ -35,11 +38,14 @@ C_DEPS += \
 ./app_jy901.d \
 ./bluetooth.d \
 ./bsp_jy901.d \
+./control.d \
 ./delay.d \
 ./empty.d \
 ./ti_msp_dl_config.d \
 ./startup_mspm0g350x_ticlang.d \
 ./encoder.d \
+./interrupt.d \
+./key.d \
 ./mid_jy901.d \
 ./myxunji.d \
 ./tb6612.d 
@@ -52,11 +58,14 @@ OBJS += \
 ./app_jy901.o \
 ./bluetooth.o \
 ./bsp_jy901.o \
+./control.o \
 ./delay.o \
 ./empty.o \
 ./ti_msp_dl_config.o \
 ./startup_mspm0g350x_ticlang.o \
 ./encoder.o \
+./interrupt.o \
+./key.o \
 ./mid_jy901.o \
 ./myxunji.o \
 ./tb6612.o 
@@ -71,11 +80,14 @@ OBJS__QUOTED += \
 "app_jy901.o" \
 "bluetooth.o" \
 "bsp_jy901.o" \
+"control.o" \
 "delay.o" \
 "empty.o" \
 "ti_msp_dl_config.o" \
 "startup_mspm0g350x_ticlang.o" \
 "encoder.o" \
+"interrupt.o" \
+"key.o" \
 "mid_jy901.o" \
 "myxunji.o" \
 "tb6612.o" 
@@ -90,11 +102,14 @@ C_DEPS__QUOTED += \
 "app_jy901.d" \
 "bluetooth.d" \
 "bsp_jy901.d" \
+"control.d" \
 "delay.d" \
 "empty.d" \
 "ti_msp_dl_config.d" \
 "startup_mspm0g350x_ticlang.d" \
 "encoder.d" \
+"interrupt.d" \
+"key.d" \
 "mid_jy901.d" \
 "myxunji.d" \
 "tb6612.d" 
@@ -109,11 +124,14 @@ C_SRCS__QUOTED += \
 "../app_jy901.c" \
 "../bluetooth.c" \
 "../bsp_jy901.c" \
+"../control.c" \
 "../delay.c" \
 "../empty.c" \
 "./ti_msp_dl_config.c" \
 "E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/msp/m0p/startup_system_files/ticlang/startup_mspm0g350x_ticlang.c" \
 "../encoder.c" \
+"../interrupt.c" \
+"../key.c" \
 "../mid_jy901.c" \
 "../myxunji.c" \
 "../tb6612.c" 
