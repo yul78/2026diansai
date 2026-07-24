@@ -205,7 +205,7 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 
 /* Defines for MOTOR_A_A: GPIOB.4 with pinCMx 17 on package pin 52 */
 // groups represented: ["AJ","ENCODER"]
-// pins affected: ["AJ2","AJ4","MOTOR_A_A","MOTOR_B_A"]
+// pins affected: ["AJ2","AJ4","MOTOR_A_A","MOTOR_B_A","MOTOR_B_B"]
 #define GPIO_MULTIPLE_GPIOB_INT_IRQN                            (GPIOB_INT_IRQn)
 #define GPIO_MULTIPLE_GPIOB_INT_IIDX            (DL_INTERRUPT_GROUP1_IIDX_GPIOB)
 #define ENCODER_MOTOR_A_A_IIDX                               (DL_GPIO_IIDX_DIO4)
@@ -219,6 +219,7 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 #define ENCODER_MOTOR_B_A_PIN                                   (DL_GPIO_PIN_11)
 #define ENCODER_MOTOR_B_A_IOMUX                                  (IOMUX_PINCM28)
 /* Defines for MOTOR_B_B: GPIOB.5 with pinCMx 18 on package pin 53 */
+#define ENCODER_MOTOR_B_B_IIDX                               (DL_GPIO_IIDX_DIO5)
 #define ENCODER_MOTOR_B_B_PIN                                    (DL_GPIO_PIN_5)
 #define ENCODER_MOTOR_B_B_IOMUX                                  (IOMUX_PINCM18)
 /* Defines for XJ1: GPIOA.27 with pinCMx 60 on package pin 31 */

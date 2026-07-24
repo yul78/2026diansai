@@ -11,8 +11,6 @@ extern uint8_t AJ4_pressed;
 
 void GROUP1_IRQHandler(void)
 {
-    // 分别获取两个端口的中断状态
-    uint32_t encoder_status = DL_GPIO_getEnabledInterruptStatus(ENCODER_PORT,ENCODER_MOTOR_A_A_PIN | ENCODER_MOTOR_B_A_PIN);
     uint32_t aj_status_portA = DL_GPIO_getEnabledInterruptStatus(GPIOA, AJ_AJ1_PIN | AJ_AJ3_PIN);  // AJ1、AJ3 在 GPIOA
     uint32_t aj_status_portB = DL_GPIO_getEnabledInterruptStatus(GPIOB, AJ_AJ2_PIN | AJ_AJ4_PIN);  // AJ2、AJ4 在 GPIOB
 
@@ -34,26 +32,7 @@ void GROUP1_IRQHandler(void)
         DL_GPIO_clearInterruptStatus(AJ_AJ4_PORT, AJ_AJ4_PIN);
     }
 
-    // 处理编码器中断
-    if (encoder_status) 
-    {
-        if (encoder_status & ENCODER_MOTOR_A_A_PIN) {
-            if (DL_GPIO_readPins(ENCODER_PORT, ENCODER_MOTOR_A_B_PIN)) {
-                EncoderA.count -= EncoderA.polarity;
-            } else {
-                EncoderA.count += EncoderA.polarity;
-            }
-        }
-
-        if (encoder_status & ENCODER_MOTOR_B_A_PIN) {
-            if (DL_GPIO_readPins(ENCODER_PORT, ENCODER_MOTOR_B_B_PIN)) {
-                EncoderB.count -= EncoderB.polarity;
-            } else {
-                EncoderB.count += EncoderB.polarity;
-            }
-        }
-            DL_GPIO_clearInterruptStatus(ENCODER_PORT, encoder_status);
-    }
+    Encoder_IRQHandler();
 }
 
 void TIMER_TICK_INST_IRQHandler(void)

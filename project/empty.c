@@ -36,7 +36,6 @@ int main(void)
 
     imu963ra_init_state = imu963ra_init();
     imu963ra_ready = (imu963ra_init_state == IMU963RA_INIT_OK);
-    OLED_Clear();
     if (imu963ra_ready) {
         imu963ra_attitude_init(100.0f);
     }
@@ -45,12 +44,8 @@ int main(void)
     TimerTick_Init();
     
     while (1) {
-        char str[50];
-        sprintf(str, "pitch:%.2f roll:%.2f yaw:%.2f\r\n", imu963_angle.pitch, imu963_angle.roll, imu963_angle.yaw);
-        Uart_DebugSendString(str);
-        //Uart_DebugSendAngle();
 
-        static uint32_t last_imu_update_ms = 0U;
+        
         /**************按键测试************ */
 
         if(AJ1_IsPressed())
@@ -73,7 +68,7 @@ int main(void)
 
         /*************循迹测试**************/
 
-        static int16_t left_speed_load = 0, right_speed_load = 0;
+        static int16_t left_speed_load = 1000, right_speed_load = 1000;
         // OLED_ShowSignedNum(1,1,left_speed,4);
         // OLED_ShowSignedNum(2,1,right_speed,4);
 
@@ -84,13 +79,12 @@ int main(void)
 
         Bluetooth_Task();
 
+        /***************IMU963部分********************/
+        static uint32_t last_imu_update_ms = 0U;
         if (imu963ra_ready && imu963ra_update_flag) {
             imu963ra_attitude_get_euler(&imu963_angle);
-
-
             uint32_t now_ms;
             uint32_t elapsed_ms;
-
             __disable_irq();
             imu963ra_update_flag = 0U;
             now_ms = imu963ra_tick_ms;
@@ -100,15 +94,13 @@ int main(void)
             last_imu_update_ms = now_ms;
             imu963ra_attitude_update_with_delta_time((float)elapsed_ms * 0.001f);
         }
+        /*********************************************/
 
         
-        // OLED_ShowSignedNum(2, 1, l_speed_now, 4);
-        // OLED_ShowSignedNum(3, 1, r_speed_now, 4);
+        OLED_ShowSignedNum(2, 1, l_speed_now, 4);
+        OLED_ShowSignedNum(3, 1, r_speed_now, 4);
         //OLED_ShowSignedNum(2, 1, Encoder_GetCountA(), 4);
         //OLED_ShowSignedNum(3, 1, Encoder_GetCountB(), 4);
-        // OLED_ShowFloat(1, 3, jy901_data.roll,  3, 1);
-        // OLED_ShowFloat(2, 3, jy901_data.pitch, 3, 1);
-        // OLED_ShowFloat(3, 3, jy901_data.yaw,   3, 1);
     }
 }
 
