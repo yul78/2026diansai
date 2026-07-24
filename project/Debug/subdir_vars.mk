@@ -10,9 +10,7 @@ SYSCFG_SRCS += \
 
 C_SRCS += \
 ../DL_OLED.c \
-../app_jy901.c \
 ../bluetooth.c \
-../bsp_jy901.c \
 ../control.c \
 ../delay.c \
 ../empty.c \
@@ -21,9 +19,9 @@ E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/msp/m0p/startup_system_fil
 ../encoder.c \
 ../interrupt.c \
 ../key.c \
-../mid_jy901.c \
 ../myxunji.c \
-../tb6612.c 
+../tb6612.c \
+../vofa_debug.c 
 
 GEN_CMDS += \
 ./device_linker.cmd 
@@ -35,9 +33,7 @@ GEN_FILES += \
 
 C_DEPS += \
 ./DL_OLED.d \
-./app_jy901.d \
 ./bluetooth.d \
-./bsp_jy901.d \
 ./control.d \
 ./delay.d \
 ./empty.d \
@@ -46,18 +42,16 @@ C_DEPS += \
 ./encoder.d \
 ./interrupt.d \
 ./key.d \
-./mid_jy901.d \
 ./myxunji.d \
-./tb6612.d 
+./tb6612.d \
+./vofa_debug.d 
 
 GEN_OPTS += \
 ./device.opt 
 
 OBJS += \
 ./DL_OLED.o \
-./app_jy901.o \
 ./bluetooth.o \
-./bsp_jy901.o \
 ./control.o \
 ./delay.o \
 ./empty.o \
@@ -66,9 +60,9 @@ OBJS += \
 ./encoder.o \
 ./interrupt.o \
 ./key.o \
-./mid_jy901.o \
 ./myxunji.o \
-./tb6612.o 
+./tb6612.o \
+./vofa_debug.o 
 
 GEN_MISC_FILES += \
 ./device.cmd.genlibs \
@@ -77,9 +71,7 @@ GEN_MISC_FILES += \
 
 OBJS__QUOTED += \
 "DL_OLED.o" \
-"app_jy901.o" \
 "bluetooth.o" \
-"bsp_jy901.o" \
 "control.o" \
 "delay.o" \
 "empty.o" \
@@ -88,9 +80,9 @@ OBJS__QUOTED += \
 "encoder.o" \
 "interrupt.o" \
 "key.o" \
-"mid_jy901.o" \
 "myxunji.o" \
-"tb6612.o" 
+"tb6612.o" \
+"vofa_debug.o" 
 
 GEN_MISC_FILES__QUOTED += \
 "device.cmd.genlibs" \
@@ -99,9 +91,7 @@ GEN_MISC_FILES__QUOTED += \
 
 C_DEPS__QUOTED += \
 "DL_OLED.d" \
-"app_jy901.d" \
 "bluetooth.d" \
-"bsp_jy901.d" \
 "control.d" \
 "delay.d" \
 "empty.d" \
@@ -110,9 +100,9 @@ C_DEPS__QUOTED += \
 "encoder.d" \
 "interrupt.d" \
 "key.d" \
-"mid_jy901.d" \
 "myxunji.d" \
-"tb6612.d" 
+"tb6612.d" \
+"vofa_debug.d" 
 
 GEN_FILES__QUOTED += \
 "device_linker.cmd" \
@@ -121,9 +111,7 @@ GEN_FILES__QUOTED += \
 
 C_SRCS__QUOTED += \
 "../DL_OLED.c" \
-"../app_jy901.c" \
 "../bluetooth.c" \
-"../bsp_jy901.c" \
 "../control.c" \
 "../delay.c" \
 "../empty.c" \
@@ -132,9 +120,9 @@ C_SRCS__QUOTED += \
 "../encoder.c" \
 "../interrupt.c" \
 "../key.c" \
-"../mid_jy901.c" \
 "../myxunji.c" \
-"../tb6612.c" 
+"../tb6612.c" \
+"../vofa_debug.c" 
 
 SYSCFG_SRCS__QUOTED += \
 "../empty.syscfg" 

@@ -16,6 +16,7 @@ const GPIO3  = GPIO.addInstance();
 const GPIO4  = GPIO.addInstance();
 const GPIO5  = GPIO.addInstance();
 const GPIO6  = GPIO.addInstance();
+const GPIO7  = GPIO.addInstance();
 const PWM    = scripting.addModule("/ti/driverlib/PWM", {}, false);
 const PWM1   = PWM.addInstance();
 const SYSCTL = scripting.addModule("/ti/driverlib/SYSCTL");
@@ -24,6 +25,7 @@ const TIMER1 = TIMER.addInstance();
 const UART   = scripting.addModule("/ti/driverlib/UART", {}, false);
 const UART1  = UART.addInstance();
 const UART2  = UART.addInstance();
+const UART3  = UART.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -154,6 +156,13 @@ GPIO6.associatedPins[3].interruptPriority = "0";
 GPIO6.associatedPins[3].polarity          = "FALL";
 GPIO6.associatedPins[3].pin.$assign       = "PB23";
 
+GPIO7.$name                         = "IMU_IIC";
+GPIO7.associatedPins.create(2);
+GPIO7.associatedPins[0].$name       = "IMU_SCL";
+GPIO7.associatedPins[0].pin.$assign = "PA12";
+GPIO7.associatedPins[1].$name       = "IMU_SDA";
+GPIO7.associatedPins[1].pin.$assign = "PB15";
+
 PWM1.timerCount                         = 4000;
 PWM1.$name                              = "PWM_TB6612";
 PWM1.pwmMode                            = "EDGE_ALIGN_UP";
@@ -210,6 +219,19 @@ UART2.rxPinConfig.hideOutputInversion  = scripting.forceWrite(false);
 UART2.rxPinConfig.onlyInternalResistor = scripting.forceWrite(false);
 UART2.rxPinConfig.passedPeripheralType = scripting.forceWrite("Digital");
 
+UART3.$name                            = "UART_DEBUG";
+UART3.peripheral.rxPin.$assign         = "PA13";
+UART3.peripheral.txPin.$assign         = "PA14";
+UART3.txPinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric6";
+UART3.txPinConfig.direction            = scripting.forceWrite("OUTPUT");
+UART3.txPinConfig.hideOutputInversion  = scripting.forceWrite(false);
+UART3.txPinConfig.onlyInternalResistor = scripting.forceWrite(false);
+UART3.txPinConfig.passedPeripheralType = scripting.forceWrite("Digital");
+UART3.rxPinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric7";
+UART3.rxPinConfig.hideOutputInversion  = scripting.forceWrite(false);
+UART3.rxPinConfig.onlyInternalResistor = scripting.forceWrite(false);
+UART3.rxPinConfig.passedPeripheralType = scripting.forceWrite("Digital");
+
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
@@ -224,3 +246,4 @@ Board.peripheral.swdioPin.$suggestSolution         = "PA19";
 PWM1.peripheral.$suggestSolution                   = "TIMG6";
 UART1.peripheral.$suggestSolution                  = "UART1";
 UART2.peripheral.$suggestSolution                  = "UART2";
+UART3.peripheral.$suggestSolution                  = "UART3";

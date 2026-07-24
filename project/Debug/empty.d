@@ -84,9 +84,10 @@ empty.o: ../empty.c \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/dl_wwdt.h \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_interrupt.h \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_systick.h \
- ../tb6612.h ../encoder.h ../DL_OLED.h ../app_jy901.h ../bsp_jy901.h \
- ../mid_jy901.h ../bluetooth.h ../myxunji.h ../delay.h ../interrupt.h \
- ../key.h
+ ../tb6612.h ../encoder.h ../DL_OLED.h ../bluetooth.h ../myxunji.h \
+ ../delay.h ../interrupt.h ../key.h ../imu963/zf_device_imu963ra.h \
+ ../imu963/zf_common_typedef.h ../imu963/imu963ra_attitude.h \
+ ../vofa_debug.h
 ti_msp_dl_config.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/msp/msp.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/DeviceFamily.h:
@@ -173,11 +174,12 @@ E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_systick.h:
 ../tb6612.h:
 ../encoder.h:
 ../DL_OLED.h:
-../app_jy901.h:
-../bsp_jy901.h:
-../mid_jy901.h:
 ../bluetooth.h:
 ../myxunji.h:
 ../delay.h:
 ../interrupt.h:
 ../key.h:
+../imu963/zf_device_imu963ra.h:
+../imu963/zf_common_typedef.h:
+../imu963/imu963ra_attitude.h:
+../vofa_debug.h:

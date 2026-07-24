@@ -149,6 +149,22 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 #define UART_BT_BAUD_RATE                                                 (9600)
 #define UART_BT_IBRD_40_MHZ_9600_BAUD                                      (260)
 #define UART_BT_FBRD_40_MHZ_9600_BAUD                                       (27)
+/* Defines for UART_DEBUG */
+#define UART_DEBUG_INST                                                    UART3
+#define UART_DEBUG_INST_FREQUENCY                                       80000000
+#define UART_DEBUG_INST_IRQHandler                              UART3_IRQHandler
+#define UART_DEBUG_INST_INT_IRQN                                  UART3_INT_IRQn
+#define GPIO_UART_DEBUG_RX_PORT                                            GPIOA
+#define GPIO_UART_DEBUG_TX_PORT                                            GPIOA
+#define GPIO_UART_DEBUG_RX_PIN                                    DL_GPIO_PIN_13
+#define GPIO_UART_DEBUG_TX_PIN                                    DL_GPIO_PIN_14
+#define GPIO_UART_DEBUG_IOMUX_RX                                 (IOMUX_PINCM35)
+#define GPIO_UART_DEBUG_IOMUX_TX                                 (IOMUX_PINCM36)
+#define GPIO_UART_DEBUG_IOMUX_RX_FUNC                  IOMUX_PINCM35_PF_UART3_RX
+#define GPIO_UART_DEBUG_IOMUX_TX_FUNC                  IOMUX_PINCM36_PF_UART3_TX
+#define UART_DEBUG_BAUD_RATE                                              (9600)
+#define UART_DEBUG_IBRD_80_MHZ_9600_BAUD                                   (520)
+#define UART_DEBUG_FBRD_80_MHZ_9600_BAUD                                    (53)
 
 
 
@@ -260,6 +276,14 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 #define AJ_AJ4_IIDX                                         (DL_GPIO_IIDX_DIO23)
 #define AJ_AJ4_PIN                                              (DL_GPIO_PIN_23)
 #define AJ_AJ4_IOMUX                                             (IOMUX_PINCM51)
+/* Defines for IMU_SCL: GPIOA.12 with pinCMx 34 on package pin 5 */
+#define IMU_IIC_IMU_SCL_PORT                                             (GPIOA)
+#define IMU_IIC_IMU_SCL_PIN                                     (DL_GPIO_PIN_12)
+#define IMU_IIC_IMU_SCL_IOMUX                                    (IOMUX_PINCM34)
+/* Defines for IMU_SDA: GPIOB.15 with pinCMx 32 on package pin 3 */
+#define IMU_IIC_IMU_SDA_PORT                                             (GPIOB)
+#define IMU_IIC_IMU_SDA_PIN                                     (DL_GPIO_PIN_15)
+#define IMU_IIC_IMU_SDA_IOMUX                                    (IOMUX_PINCM32)
 
 
 /* clang-format on */
@@ -274,6 +298,7 @@ void SYSCFG_DL_PWM_TB6612_init(void);
 void SYSCFG_DL_TIMER_TICK_init(void);
 void SYSCFG_DL_UART_JY901_init(void);
 void SYSCFG_DL_UART_BT_init(void);
+void SYSCFG_DL_UART_DEBUG_init(void);
 
 
 bool SYSCFG_DL_saveConfiguration(void);

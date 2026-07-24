@@ -66,7 +66,7 @@ void TIMER_TICK_INST_IRQHandler(void)
         if (tick >= 10) {
             tick = 0;
             // 每 10ms 执行一次的任务
-            //Encoder_GetSpeeds(&l_speed_now, &r_speed_now);
+            Encoder_GetSpeeds(&l_speed_now, &r_speed_now);
         }
     }
 }
