@@ -47,6 +47,7 @@ extern float imu963ra_attitude_yaw;
 
 void  imu963ra_attitude_init(float sample_rate_hz);
 void  imu963ra_attitude_update(void);
+void  imu963ra_attitude_update_with_delta_time(float delta_time_seconds);
 uint8 imu963ra_attitude_is_ready(void);
 
 // 参数说明     angle           用于接收姿态角的结构体指针，不能为空指针

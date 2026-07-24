@@ -15,8 +15,28 @@ int32_t l_speed_now, r_speed_now;
 static uint8_t imu963ra_ready;
 static uint8_t imu963ra_init_state;
 
+#define IMU963RA_OLED_ROWS             (4U)
+#define IMU963RA_OLED_COLUMNS          (16U)
+#define IMU963RA_ANGLE_COLUMN          (6U)
+#define IMU963RA_ANGLE_TEXT_LENGTH     (6U)
+
+static char imu963ra_oled_target[IMU963RA_OLED_ROWS][IMU963RA_OLED_COLUMNS] = {
+    "ROLL :          ",
+    "PITCH:          ",
+    "YAW  :          ",
+    "STABILIZING...  ",
+};
+static char imu963ra_oled_displayed[IMU963RA_OLED_ROWS][IMU963RA_OLED_COLUMNS] = {
+    "ROLL :          ",
+    "PITCH:          ",
+    "YAW  :          ",
+    "STABILIZING...  ",
+};
+
 void TimerTick_Init(void);
 static void IMU963RA_DisplayAngles(void);
+static void IMU963RA_DisplayTask(void);
+static void IMU963RA_FormatAngle(float angle, char text[IMU963RA_ANGLE_TEXT_LENGTH]);
 static void IMU963RA_SendDebug(void);
 
 int main(void)
@@ -37,6 +57,7 @@ int main(void)
         OLED_ShowString(1, 1, "ROLL :");
         OLED_ShowString(2, 1, "PITCH:");
         OLED_ShowString(3, 1, "YAW  :");
+        OLED_ShowString(4, 1, "STABILIZING...  ");
     } else {
         OLED_ShowString(1, 1, "IMU963 ERROR");
         OLED_ShowString(2, 1, "CODE:");
@@ -51,8 +72,7 @@ int main(void)
     TimerTick_Init();
     
     while (1) {
-        static uint8_t display_divider = 0U;
-
+        static uint32_t last_imu_update_ms = 0U;
         /**************按键测试************ */
 
         if(AJ1_IsPressed())
@@ -86,13 +106,25 @@ int main(void)
 
         Bluetooth_Task();
 
+        if (imu963ra_ready && imu963ra_update_flag) {
+            uint32_t now_ms;
+            uint32_t elapsed_ms;
+
+            __disable_irq();
+            imu963ra_update_flag = 0U;
+            now_ms = imu963ra_tick_ms;
+            __enable_irq();
+
+            elapsed_ms = now_ms - last_imu_update_ms;
+            last_imu_update_ms = now_ms;
+            imu963ra_attitude_update_with_delta_time((float)elapsed_ms * 0.001f);
+        }
+        if (imu963ra_ready && imu963ra_display_flag) {
+            imu963ra_display_flag = 0U;
+            IMU963RA_DisplayAngles();
+        }
         if (imu963ra_ready) {
-            imu963ra_attitude_update();
-            if (display_divider++ >= 9U) {
-                display_divider = 0U;
-                IMU963RA_DisplayAngles();
-            }
-            delay_ms(10);
+            IMU963RA_DisplayTask();
         }
         
         // OLED_ShowSignedNum(2, 1, l_speed_now, 4);
@@ -114,14 +146,75 @@ void TimerTick_Init(void)
 
 static void IMU963RA_DisplayAngles(void)
 {
+    static const char ready_text[IMU963RA_OLED_COLUMNS] = "ATTITUDE READY  ";
     imu963ra_attitude_angle_struct angle;
+    char angle_text[IMU963RA_ANGLE_TEXT_LENGTH];
+    uint8_t row;
+    uint8_t column;
 
     imu963ra_attitude_get_euler(&angle);
-    OLED_ShowFloat(1, 7, angle.roll, 3, 1);
-    OLED_ShowFloat(2, 7, angle.pitch, 3, 1);
-    OLED_ShowFloat(3, 7, angle.yaw, 3, 1);
-    OLED_ShowString(4, 1, imu963ra_attitude_is_ready() ? "ATTITUDE READY  "
-                                                       : "STABILIZING...  ");
+
+    IMU963RA_FormatAngle(angle.roll, angle_text);
+    for (column = 0U; column < IMU963RA_ANGLE_TEXT_LENGTH; column++) {
+        imu963ra_oled_target[0][IMU963RA_ANGLE_COLUMN + column] = angle_text[column];
+    }
+    IMU963RA_FormatAngle(angle.pitch, angle_text);
+    for (column = 0U; column < IMU963RA_ANGLE_TEXT_LENGTH; column++) {
+        imu963ra_oled_target[1][IMU963RA_ANGLE_COLUMN + column] = angle_text[column];
+    }
+    IMU963RA_FormatAngle(angle.yaw, angle_text);
+    for (column = 0U; column < IMU963RA_ANGLE_TEXT_LENGTH; column++) {
+        imu963ra_oled_target[2][IMU963RA_ANGLE_COLUMN + column] = angle_text[column];
+    }
+
+    if (imu963ra_attitude_is_ready()) {
+        for (row = 0U; row < IMU963RA_OLED_COLUMNS; row++) {
+            imu963ra_oled_target[3][row] = ready_text[row];
+        }
+    }
+}
+
+static void IMU963RA_DisplayTask(void)
+{
+    static uint8_t scan_index = 0U;
+    uint8_t attempt;
+
+    for (attempt = 0U; attempt < IMU963RA_OLED_ROWS * IMU963RA_OLED_COLUMNS; attempt++) {
+        uint8_t row = scan_index / IMU963RA_OLED_COLUMNS;
+        uint8_t column = scan_index % IMU963RA_OLED_COLUMNS;
+
+        scan_index++;
+        if (scan_index >= IMU963RA_OLED_ROWS * IMU963RA_OLED_COLUMNS) {
+            scan_index = 0U;
+        }
+        if (imu963ra_oled_displayed[row][column] != imu963ra_oled_target[row][column]) {
+            OLED_ShowChar(row + 1U, column + 1U, imu963ra_oled_target[row][column]);
+            imu963ra_oled_displayed[row][column] = imu963ra_oled_target[row][column];
+            return;
+        }
+    }
+}
+
+static void IMU963RA_FormatAngle(float angle, char text[IMU963RA_ANGLE_TEXT_LENGTH])
+{
+    uint32_t scaled;
+
+    if (angle > 999.9f) {
+        angle = 999.9f;
+    } else if (angle < -999.9f) {
+        angle = -999.9f;
+    }
+
+    text[0] = (angle < 0.0f) ? '-' : '+';
+    if (angle < 0.0f) {
+        angle = -angle;
+    }
+    scaled = (uint32_t)(angle * 10.0f + 0.5f);
+    text[1] = (char)('0' + ((scaled / 1000U) % 10U));
+    text[2] = (char)('0' + ((scaled / 100U) % 10U));
+    text[3] = (char)('0' + ((scaled / 10U) % 10U));
+    text[4] = '.';
+    text[5] = (char)('0' + (scaled % 10U));
 }
 
 static void IMU963RA_SendDebug(void)

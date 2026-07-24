@@ -51,6 +51,10 @@ void imu963ra_attitude_init(float sample_rate_hz) {
 }
 
 void imu963ra_attitude_update(void) {
+    imu963ra_attitude_update_with_delta_time(imu963ra_attitude_delta_time);
+}
+
+void imu963ra_attitude_update_with_delta_time(float delta_time_seconds) {
     FusionQuaternion quaternion;
     FusionEuler euler;
     FusionVector accelerometer;
@@ -59,12 +63,15 @@ void imu963ra_attitude_update(void) {
     if (!imu963ra_attitude_ready) {
         return;
     }
+    if (delta_time_seconds <= 0.0f) {
+        delta_time_seconds = imu963ra_attitude_delta_time;
+    }
 
     imu963ra_attitude_refresh_inertial(&accelerometer, &gyroscope);
     gyroscope = FusionVectorSubtract(gyroscope, imu963ra_attitude_gyro_bias);
     gyroscope = FusionOffsetUpdate(&imu963ra_fusion_offset, gyroscope);
 
-    FusionAhrsUpdateNoMagnetometer(&imu963ra_fusion_ahrs, gyroscope, accelerometer, imu963ra_attitude_delta_time);
+    FusionAhrsUpdateNoMagnetometer(&imu963ra_fusion_ahrs, gyroscope, accelerometer, delta_time_seconds);
 
     quaternion = FusionAhrsGetQuaternion(&imu963ra_fusion_ahrs);
     euler = FusionQuaternionToEuler(quaternion);
