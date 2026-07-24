@@ -66,20 +66,19 @@ void TIMER_TICK_INST_IRQHandler(void)
         // 在这里执行你的 1ms 任务
         // 例如：软件计数器累加
         static uint8_t tick_10ms = 0U;
-        static uint8_t tick_50ms = 0U;
+        static uint8_t tick_100ms = 0U;
 
         imu963ra_tick_ms++;
         tick_10ms++;
-        tick_50ms++;
+        tick_100ms++;
         if (tick_10ms >= 10U) {
             tick_10ms = 0U;
             // 每 10ms 执行一次的任务
             Encoder_GetSpeeds(&l_speed_now, &r_speed_now);
             imu963ra_update_flag = 1U;
         }
-        if (tick_50ms >= 50U) {
-            tick_50ms = 0U;
-            imu963ra_display_flag = 1U;
+        if (tick_100ms >= 100U) {
+            tick_100ms = 0U;
         }
     }
 }

@@ -23,3 +23,16 @@ void Uart_DebugSendHexByte(uint8_t value) {
     text[2] = '\0';
     Uart_DebugSendString(text);
 }
+
+void Uart_DebugSendAngle(void)
+{
+    char str[50];
+    imu963ra_attitude_angle_struct angle;
+
+    if (imu963ra_attitude_is_ready()) 
+    {
+        imu963ra_attitude_get_euler(&angle);
+    }
+    sprintf(str, "pitch:%.2f roll:%.2f yaw:%.2f\r\n", angle.pitch, angle.roll, angle.yaw);
+    Uart_DebugSendString(str);
+}
