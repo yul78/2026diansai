@@ -3,7 +3,6 @@
 
 #include "ti_msp_dl_config.h"
 #include "delay.h"
-#include "tb6612.h"
 #include "DL_OLED.h"
 
 

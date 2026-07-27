@@ -90,22 +90,58 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 
 
 /* Defines for PWM_TB6612 */
-#define PWM_TB6612_INST                                                    TIMG6
-#define PWM_TB6612_INST_IRQHandler                              TIMG6_IRQHandler
-#define PWM_TB6612_INST_INT_IRQN                                (TIMG6_INT_IRQn)
-#define PWM_TB6612_INST_CLK_FREQ                                        80000000
+#define PWM_TB6612_INST                                                    TIMG8
+#define PWM_TB6612_INST_IRQHandler                              TIMG8_IRQHandler
+#define PWM_TB6612_INST_INT_IRQN                                (TIMG8_INT_IRQn)
+#define PWM_TB6612_INST_CLK_FREQ                                        40000000
 /* GPIO defines for channel 0 */
-#define GPIO_PWM_TB6612_C0_PORT                                            GPIOB
-#define GPIO_PWM_TB6612_C0_PIN                                     DL_GPIO_PIN_6
-#define GPIO_PWM_TB6612_C0_IOMUX                                 (IOMUX_PINCM23)
-#define GPIO_PWM_TB6612_C0_IOMUX_FUNC                IOMUX_PINCM23_PF_TIMG6_CCP0
+#define GPIO_PWM_TB6612_C0_PORT                                            GPIOA
+#define GPIO_PWM_TB6612_C0_PIN                                     DL_GPIO_PIN_1
+#define GPIO_PWM_TB6612_C0_IOMUX                                  (IOMUX_PINCM2)
+#define GPIO_PWM_TB6612_C0_IOMUX_FUNC                 IOMUX_PINCM2_PF_TIMG8_CCP0
 #define GPIO_PWM_TB6612_C0_IDX                               DL_TIMER_CC_0_INDEX
 /* GPIO defines for channel 1 */
-#define GPIO_PWM_TB6612_C1_PORT                                            GPIOB
-#define GPIO_PWM_TB6612_C1_PIN                                     DL_GPIO_PIN_7
-#define GPIO_PWM_TB6612_C1_IOMUX                                 (IOMUX_PINCM24)
-#define GPIO_PWM_TB6612_C1_IOMUX_FUNC                IOMUX_PINCM24_PF_TIMG6_CCP1
+#define GPIO_PWM_TB6612_C1_PORT                                            GPIOA
+#define GPIO_PWM_TB6612_C1_PIN                                     DL_GPIO_PIN_0
+#define GPIO_PWM_TB6612_C1_IOMUX                                  (IOMUX_PINCM1)
+#define GPIO_PWM_TB6612_C1_IOMUX_FUNC                 IOMUX_PINCM1_PF_TIMG8_CCP1
 #define GPIO_PWM_TB6612_C1_IDX                               DL_TIMER_CC_1_INDEX
+
+/* Defines for PWM1_AT8236 */
+#define PWM1_AT8236_INST                                                   TIMG6
+#define PWM1_AT8236_INST_IRQHandler                             TIMG6_IRQHandler
+#define PWM1_AT8236_INST_INT_IRQN                               (TIMG6_INT_IRQn)
+#define PWM1_AT8236_INST_CLK_FREQ                                       10000000
+/* GPIO defines for channel 0 */
+#define GPIO_PWM1_AT8236_C0_PORT                                           GPIOB
+#define GPIO_PWM1_AT8236_C0_PIN                                    DL_GPIO_PIN_6
+#define GPIO_PWM1_AT8236_C0_IOMUX                                (IOMUX_PINCM23)
+#define GPIO_PWM1_AT8236_C0_IOMUX_FUNC               IOMUX_PINCM23_PF_TIMG6_CCP0
+#define GPIO_PWM1_AT8236_C0_IDX                              DL_TIMER_CC_0_INDEX
+/* GPIO defines for channel 1 */
+#define GPIO_PWM1_AT8236_C1_PORT                                           GPIOB
+#define GPIO_PWM1_AT8236_C1_PIN                                    DL_GPIO_PIN_7
+#define GPIO_PWM1_AT8236_C1_IOMUX                                (IOMUX_PINCM24)
+#define GPIO_PWM1_AT8236_C1_IOMUX_FUNC               IOMUX_PINCM24_PF_TIMG6_CCP1
+#define GPIO_PWM1_AT8236_C1_IDX                              DL_TIMER_CC_1_INDEX
+
+/* Defines for PWM2_AT8236 */
+#define PWM2_AT8236_INST                                                   TIMA1
+#define PWM2_AT8236_INST_IRQHandler                             TIMA1_IRQHandler
+#define PWM2_AT8236_INST_INT_IRQN                               (TIMA1_INT_IRQn)
+#define PWM2_AT8236_INST_CLK_FREQ                                       10000000
+/* GPIO defines for channel 0 */
+#define GPIO_PWM2_AT8236_C0_PORT                                           GPIOB
+#define GPIO_PWM2_AT8236_C0_PIN                                    DL_GPIO_PIN_2
+#define GPIO_PWM2_AT8236_C0_IOMUX                                (IOMUX_PINCM15)
+#define GPIO_PWM2_AT8236_C0_IOMUX_FUNC               IOMUX_PINCM15_PF_TIMA1_CCP0
+#define GPIO_PWM2_AT8236_C0_IDX                              DL_TIMER_CC_0_INDEX
+/* GPIO defines for channel 1 */
+#define GPIO_PWM2_AT8236_C1_PORT                                           GPIOB
+#define GPIO_PWM2_AT8236_C1_PIN                                    DL_GPIO_PIN_3
+#define GPIO_PWM2_AT8236_C1_IOMUX                                (IOMUX_PINCM16)
+#define GPIO_PWM2_AT8236_C1_IOMUX_FUNC               IOMUX_PINCM16_PF_TIMA1_CCP1
+#define GPIO_PWM2_AT8236_C1_IDX                              DL_TIMER_CC_1_INDEX
 
 
 
@@ -185,21 +221,22 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 /* Defines for OLED_SDA: GPIOA.30 with pinCMx 5 on package pin 37 */
 #define OLED_OLED_SDA_PIN                                       (DL_GPIO_PIN_30)
 #define OLED_OLED_SDA_IOMUX                                       (IOMUX_PINCM5)
-/* Port definition for Pin Group MOTOR_DIR */
-#define MOTOR_DIR_PORT                                                   (GPIOB)
-
-/* Defines for MOTOR_A_IN1: GPIOB.0 with pinCMx 12 on package pin 47 */
-#define MOTOR_DIR_MOTOR_A_IN1_PIN                                (DL_GPIO_PIN_0)
-#define MOTOR_DIR_MOTOR_A_IN1_IOMUX                              (IOMUX_PINCM12)
+/* Defines for MOTOR_A_IN1: GPIOA.31 with pinCMx 6 on package pin 39 */
+#define MOTOR_DIR_MOTOR_A_IN1_PORT                                       (GPIOA)
+#define MOTOR_DIR_MOTOR_A_IN1_PIN                               (DL_GPIO_PIN_31)
+#define MOTOR_DIR_MOTOR_A_IN1_IOMUX                               (IOMUX_PINCM6)
 /* Defines for MOTOR_A_IN2: GPIOB.1 with pinCMx 13 on package pin 48 */
+#define MOTOR_DIR_MOTOR_A_IN2_PORT                                       (GPIOB)
 #define MOTOR_DIR_MOTOR_A_IN2_PIN                                (DL_GPIO_PIN_1)
 #define MOTOR_DIR_MOTOR_A_IN2_IOMUX                              (IOMUX_PINCM13)
-/* Defines for MOTOR_B_IN1: GPIOB.2 with pinCMx 15 on package pin 50 */
-#define MOTOR_DIR_MOTOR_B_IN1_PIN                                (DL_GPIO_PIN_2)
-#define MOTOR_DIR_MOTOR_B_IN1_IOMUX                              (IOMUX_PINCM15)
-/* Defines for MOTOR_B_IN2: GPIOB.3 with pinCMx 16 on package pin 51 */
-#define MOTOR_DIR_MOTOR_B_IN2_PIN                                (DL_GPIO_PIN_3)
-#define MOTOR_DIR_MOTOR_B_IN2_IOMUX                              (IOMUX_PINCM16)
+/* Defines for MOTOR_B_IN1: GPIOA.28 with pinCMx 3 on package pin 35 */
+#define MOTOR_DIR_MOTOR_B_IN1_PORT                                       (GPIOA)
+#define MOTOR_DIR_MOTOR_B_IN1_PIN                               (DL_GPIO_PIN_28)
+#define MOTOR_DIR_MOTOR_B_IN1_IOMUX                               (IOMUX_PINCM3)
+/* Defines for MOTOR_B_IN2: GPIOA.12 with pinCMx 34 on package pin 5 */
+#define MOTOR_DIR_MOTOR_B_IN2_PORT                                       (GPIOA)
+#define MOTOR_DIR_MOTOR_B_IN2_PIN                               (DL_GPIO_PIN_12)
+#define MOTOR_DIR_MOTOR_B_IN2_IOMUX                              (IOMUX_PINCM34)
 /* Port definition for Pin Group ENCODER */
 #define ENCODER_PORT                                                     (GPIOB)
 
@@ -277,14 +314,15 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 #define AJ_AJ4_IIDX                                         (DL_GPIO_IIDX_DIO23)
 #define AJ_AJ4_PIN                                              (DL_GPIO_PIN_23)
 #define AJ_AJ4_IOMUX                                             (IOMUX_PINCM51)
-/* Defines for IMU_SCL: GPIOA.12 with pinCMx 34 on package pin 5 */
-#define IMU_IIC_IMU_SCL_PORT                                             (GPIOA)
-#define IMU_IIC_IMU_SCL_PIN                                     (DL_GPIO_PIN_12)
-#define IMU_IIC_IMU_SCL_IOMUX                                    (IOMUX_PINCM34)
-/* Defines for IMU_SDA: GPIOB.15 with pinCMx 32 on package pin 3 */
-#define IMU_IIC_IMU_SDA_PORT                                             (GPIOB)
+/* Port definition for Pin Group IMU_IIC */
+#define IMU_IIC_PORT                                                     (GPIOA)
+
+/* Defines for IMU_SCL: GPIOA.16 with pinCMx 38 on package pin 9 */
+#define IMU_IIC_IMU_SCL_PIN                                     (DL_GPIO_PIN_16)
+#define IMU_IIC_IMU_SCL_IOMUX                                    (IOMUX_PINCM38)
+/* Defines for IMU_SDA: GPIOA.15 with pinCMx 37 on package pin 8 */
 #define IMU_IIC_IMU_SDA_PIN                                     (DL_GPIO_PIN_15)
-#define IMU_IIC_IMU_SDA_IOMUX                                    (IOMUX_PINCM32)
+#define IMU_IIC_IMU_SDA_IOMUX                                    (IOMUX_PINCM37)
 
 
 /* clang-format on */
@@ -296,6 +334,8 @@ void SYSCFG_DL_SYSCTL_init(void);
 
 bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 void SYSCFG_DL_PWM_TB6612_init(void);
+void SYSCFG_DL_PWM1_AT8236_init(void);
+void SYSCFG_DL_PWM2_AT8236_init(void);
 void SYSCFG_DL_TIMER_TICK_init(void);
 void SYSCFG_DL_UART_JY901_init(void);
 void SYSCFG_DL_UART_BT_init(void);

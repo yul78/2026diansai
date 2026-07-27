@@ -40,7 +40,8 @@
 
 #include "ti_msp_dl_config.h"
 
-DL_TimerG_backupConfig gPWM_TB6612Backup;
+DL_TimerG_backupConfig gPWM1_AT8236Backup;
+DL_TimerA_backupConfig gPWM2_AT8236Backup;
 DL_UART_Main_backupConfig gUART_DEBUGBackup;
 
 /*
@@ -54,12 +55,15 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     /* Module-Specific Initializations*/
     SYSCFG_DL_SYSCTL_init();
     SYSCFG_DL_PWM_TB6612_init();
+    SYSCFG_DL_PWM1_AT8236_init();
+    SYSCFG_DL_PWM2_AT8236_init();
     SYSCFG_DL_TIMER_TICK_init();
     SYSCFG_DL_UART_JY901_init();
     SYSCFG_DL_UART_BT_init();
     SYSCFG_DL_UART_DEBUG_init();
     /* Ensure backup structures have no valid state */
-	gPWM_TB6612Backup.backupRdy 	= false;
+	gPWM1_AT8236Backup.backupRdy 	= false;
+	gPWM2_AT8236Backup.backupRdy 	= false;
 
 	gUART_DEBUGBackup.backupRdy 	= false;
 
@@ -72,7 +76,8 @@ SYSCONFIG_WEAK bool SYSCFG_DL_saveConfiguration(void)
 {
     bool retStatus = true;
 
-	retStatus &= DL_TimerG_saveConfiguration(PWM_TB6612_INST, &gPWM_TB6612Backup);
+	retStatus &= DL_TimerG_saveConfiguration(PWM1_AT8236_INST, &gPWM1_AT8236Backup);
+	retStatus &= DL_TimerA_saveConfiguration(PWM2_AT8236_INST, &gPWM2_AT8236Backup);
 	retStatus &= DL_UART_Main_saveConfiguration(UART_DEBUG_INST, &gUART_DEBUGBackup);
 
     return retStatus;
@@ -83,7 +88,8 @@ SYSCONFIG_WEAK bool SYSCFG_DL_restoreConfiguration(void)
 {
     bool retStatus = true;
 
-	retStatus &= DL_TimerG_restoreConfiguration(PWM_TB6612_INST, &gPWM_TB6612Backup, false);
+	retStatus &= DL_TimerG_restoreConfiguration(PWM1_AT8236_INST, &gPWM1_AT8236Backup, false);
+	retStatus &= DL_TimerA_restoreConfiguration(PWM2_AT8236_INST, &gPWM2_AT8236Backup, false);
 	retStatus &= DL_UART_Main_restoreConfiguration(UART_DEBUG_INST, &gUART_DEBUGBackup);
 
     return retStatus;
@@ -94,6 +100,8 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_GPIO_reset(GPIOA);
     DL_GPIO_reset(GPIOB);
     DL_TimerG_reset(PWM_TB6612_INST);
+    DL_TimerG_reset(PWM1_AT8236_INST);
+    DL_TimerA_reset(PWM2_AT8236_INST);
     DL_TimerG_reset(TIMER_TICK_INST);
     DL_UART_Main_reset(UART_JY901_INST);
     DL_UART_Main_reset(UART_BT_INST);
@@ -102,6 +110,8 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_GPIO_enablePower(GPIOA);
     DL_GPIO_enablePower(GPIOB);
     DL_TimerG_enablePower(PWM_TB6612_INST);
+    DL_TimerG_enablePower(PWM1_AT8236_INST);
+    DL_TimerA_enablePower(PWM2_AT8236_INST);
     DL_TimerG_enablePower(TIMER_TICK_INST);
     DL_UART_Main_enablePower(UART_JY901_INST);
     DL_UART_Main_enablePower(UART_BT_INST);
@@ -119,6 +129,14 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
     DL_GPIO_enableOutput(GPIO_PWM_TB6612_C0_PORT, GPIO_PWM_TB6612_C0_PIN);
     DL_GPIO_initPeripheralOutputFunction(GPIO_PWM_TB6612_C1_IOMUX,GPIO_PWM_TB6612_C1_IOMUX_FUNC);
     DL_GPIO_enableOutput(GPIO_PWM_TB6612_C1_PORT, GPIO_PWM_TB6612_C1_PIN);
+    DL_GPIO_initPeripheralOutputFunction(GPIO_PWM1_AT8236_C0_IOMUX,GPIO_PWM1_AT8236_C0_IOMUX_FUNC);
+    DL_GPIO_enableOutput(GPIO_PWM1_AT8236_C0_PORT, GPIO_PWM1_AT8236_C0_PIN);
+    DL_GPIO_initPeripheralOutputFunction(GPIO_PWM1_AT8236_C1_IOMUX,GPIO_PWM1_AT8236_C1_IOMUX_FUNC);
+    DL_GPIO_enableOutput(GPIO_PWM1_AT8236_C1_PORT, GPIO_PWM1_AT8236_C1_PIN);
+    DL_GPIO_initPeripheralOutputFunction(GPIO_PWM2_AT8236_C0_IOMUX,GPIO_PWM2_AT8236_C0_IOMUX_FUNC);
+    DL_GPIO_enableOutput(GPIO_PWM2_AT8236_C0_PORT, GPIO_PWM2_AT8236_C0_PIN);
+    DL_GPIO_initPeripheralOutputFunction(GPIO_PWM2_AT8236_C1_IOMUX,GPIO_PWM2_AT8236_C1_IOMUX_FUNC);
+    DL_GPIO_enableOutput(GPIO_PWM2_AT8236_C1_PORT, GPIO_PWM2_AT8236_C1_PIN);
 
     DL_GPIO_initPeripheralOutputFunction(
         GPIO_UART_JY901_IOMUX_TX, GPIO_UART_JY901_IOMUX_TX_FUNC);
@@ -217,10 +235,18 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
 
     DL_GPIO_clearPins(GPIOA, OLED_OLED_SCL_PIN |
 		OLED_OLED_SDA_PIN |
-		IMU_IIC_IMU_SCL_PIN);
+		MOTOR_DIR_MOTOR_A_IN1_PIN |
+		MOTOR_DIR_MOTOR_B_IN1_PIN |
+		MOTOR_DIR_MOTOR_B_IN2_PIN |
+		IMU_IIC_IMU_SCL_PIN |
+		IMU_IIC_IMU_SDA_PIN);
     DL_GPIO_enableOutput(GPIOA, OLED_OLED_SCL_PIN |
 		OLED_OLED_SDA_PIN |
-		IMU_IIC_IMU_SCL_PIN);
+		MOTOR_DIR_MOTOR_A_IN1_PIN |
+		MOTOR_DIR_MOTOR_B_IN1_PIN |
+		MOTOR_DIR_MOTOR_B_IN2_PIN |
+		IMU_IIC_IMU_SCL_PIN |
+		IMU_IIC_IMU_SDA_PIN);
     DL_GPIO_setUpperPinsPolarity(GPIOA, DL_GPIO_PIN_26_EDGE_FALL |
 		DL_GPIO_PIN_25_EDGE_FALL);
     DL_GPIO_clearInterruptStatus(GPIOA, AJ_AJ1_PIN |
@@ -228,17 +254,9 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
     DL_GPIO_enableInterrupt(GPIOA, AJ_AJ1_PIN |
 		AJ_AJ3_PIN);
     DL_GPIO_clearPins(GPIOB, Buzzer_num1_PIN |
-		MOTOR_DIR_MOTOR_A_IN1_PIN |
-		MOTOR_DIR_MOTOR_A_IN2_PIN |
-		MOTOR_DIR_MOTOR_B_IN1_PIN |
-		MOTOR_DIR_MOTOR_B_IN2_PIN |
-		IMU_IIC_IMU_SDA_PIN);
+		MOTOR_DIR_MOTOR_A_IN2_PIN);
     DL_GPIO_enableOutput(GPIOB, Buzzer_num1_PIN |
-		MOTOR_DIR_MOTOR_A_IN1_PIN |
-		MOTOR_DIR_MOTOR_A_IN2_PIN |
-		MOTOR_DIR_MOTOR_B_IN1_PIN |
-		MOTOR_DIR_MOTOR_B_IN2_PIN |
-		IMU_IIC_IMU_SDA_PIN);
+		MOTOR_DIR_MOTOR_A_IN2_PIN);
     DL_GPIO_setLowerPinsPolarity(GPIOB, DL_GPIO_PIN_4_EDGE_RISE_FALL |
 		DL_GPIO_PIN_12_EDGE_RISE_FALL |
 		DL_GPIO_PIN_11_EDGE_RISE_FALL |
@@ -373,9 +391,9 @@ SYSCONFIG_WEAK void SYSCFG_DL_SYSCTL_init(void)
 
 
 /*
- * Timer clock configuration to be sourced by  / 1 (80000000 Hz)
+ * Timer clock configuration to be sourced by  / 1 (40000000 Hz)
  * timerClkFreq = (timerClkSrc / (timerClkDivRatio * (timerClkPrescale + 1)))
- *   80000000 Hz = 80000000 Hz / (1 * (0 + 1))
+ *   40000000 Hz = 40000000 Hz / (1 * (0 + 1))
  */
 static const DL_TimerG_ClockConfig gPWM_TB6612ClockConfig = {
     .clockSel = DL_TIMER_CLOCK_BUSCLK,
@@ -420,6 +438,108 @@ SYSCONFIG_WEAK void SYSCFG_DL_PWM_TB6612_init(void) {
 
     
     DL_TimerG_setCCPDirection(PWM_TB6612_INST , DL_TIMER_CC0_OUTPUT | DL_TIMER_CC1_OUTPUT );
+
+
+}
+/*
+ * Timer clock configuration to be sourced by  / 1 (80000000 Hz)
+ * timerClkFreq = (timerClkSrc / (timerClkDivRatio * (timerClkPrescale + 1)))
+ *   10000000 Hz = 80000000 Hz / (1 * (7 + 1))
+ */
+static const DL_TimerG_ClockConfig gPWM1_AT8236ClockConfig = {
+    .clockSel = DL_TIMER_CLOCK_BUSCLK,
+    .divideRatio = DL_TIMER_CLOCK_DIVIDE_1,
+    .prescale = 7U
+};
+
+static const DL_TimerG_PWMConfig gPWM1_AT8236Config = {
+    .pwmMode = DL_TIMER_PWM_MODE_EDGE_ALIGN_UP,
+    .period = 1000,
+    .isTimerWithFourCC = false,
+    .startTimer = DL_TIMER_STOP,
+};
+
+SYSCONFIG_WEAK void SYSCFG_DL_PWM1_AT8236_init(void) {
+
+    DL_TimerG_setClockConfig(
+        PWM1_AT8236_INST, (DL_TimerG_ClockConfig *) &gPWM1_AT8236ClockConfig);
+
+    DL_TimerG_initPWMMode(
+        PWM1_AT8236_INST, (DL_TimerG_PWMConfig *) &gPWM1_AT8236Config);
+
+    // Set Counter control to the smallest CC index being used
+    DL_TimerG_setCounterControl(PWM1_AT8236_INST,DL_TIMER_CZC_CCCTL0_ZCOND,DL_TIMER_CAC_CCCTL0_ACOND,DL_TIMER_CLC_CCCTL0_LCOND);
+
+    DL_TimerG_setCaptureCompareOutCtl(PWM1_AT8236_INST, DL_TIMER_CC_OCTL_INIT_VAL_LOW,
+		DL_TIMER_CC_OCTL_INV_OUT_DISABLED, DL_TIMER_CC_OCTL_SRC_FUNCVAL,
+		DL_TIMERG_CAPTURE_COMPARE_0_INDEX);
+
+    DL_TimerG_setCaptCompUpdateMethod(PWM1_AT8236_INST, DL_TIMER_CC_UPDATE_METHOD_IMMEDIATE, DL_TIMERG_CAPTURE_COMPARE_0_INDEX);
+    DL_TimerG_setCaptureCompareValue(PWM1_AT8236_INST, 0, DL_TIMER_CC_0_INDEX);
+
+    DL_TimerG_setCaptureCompareOutCtl(PWM1_AT8236_INST, DL_TIMER_CC_OCTL_INIT_VAL_LOW,
+		DL_TIMER_CC_OCTL_INV_OUT_DISABLED, DL_TIMER_CC_OCTL_SRC_FUNCVAL,
+		DL_TIMERG_CAPTURE_COMPARE_1_INDEX);
+
+    DL_TimerG_setCaptCompUpdateMethod(PWM1_AT8236_INST, DL_TIMER_CC_UPDATE_METHOD_IMMEDIATE, DL_TIMERG_CAPTURE_COMPARE_1_INDEX);
+    DL_TimerG_setCaptureCompareValue(PWM1_AT8236_INST, 0, DL_TIMER_CC_1_INDEX);
+
+    DL_TimerG_enableClock(PWM1_AT8236_INST);
+
+
+    
+    DL_TimerG_setCCPDirection(PWM1_AT8236_INST , DL_TIMER_CC0_OUTPUT | DL_TIMER_CC1_OUTPUT );
+
+
+}
+/*
+ * Timer clock configuration to be sourced by  / 1 (80000000 Hz)
+ * timerClkFreq = (timerClkSrc / (timerClkDivRatio * (timerClkPrescale + 1)))
+ *   10000000 Hz = 80000000 Hz / (1 * (7 + 1))
+ */
+static const DL_TimerA_ClockConfig gPWM2_AT8236ClockConfig = {
+    .clockSel = DL_TIMER_CLOCK_BUSCLK,
+    .divideRatio = DL_TIMER_CLOCK_DIVIDE_1,
+    .prescale = 7U
+};
+
+static const DL_TimerA_PWMConfig gPWM2_AT8236Config = {
+    .pwmMode = DL_TIMER_PWM_MODE_EDGE_ALIGN_UP,
+    .period = 1000,
+    .isTimerWithFourCC = true,
+    .startTimer = DL_TIMER_STOP,
+};
+
+SYSCONFIG_WEAK void SYSCFG_DL_PWM2_AT8236_init(void) {
+
+    DL_TimerA_setClockConfig(
+        PWM2_AT8236_INST, (DL_TimerA_ClockConfig *) &gPWM2_AT8236ClockConfig);
+
+    DL_TimerA_initPWMMode(
+        PWM2_AT8236_INST, (DL_TimerA_PWMConfig *) &gPWM2_AT8236Config);
+
+    // Set Counter control to the smallest CC index being used
+    DL_TimerA_setCounterControl(PWM2_AT8236_INST,DL_TIMER_CZC_CCCTL0_ZCOND,DL_TIMER_CAC_CCCTL0_ACOND,DL_TIMER_CLC_CCCTL0_LCOND);
+
+    DL_TimerA_setCaptureCompareOutCtl(PWM2_AT8236_INST, DL_TIMER_CC_OCTL_INIT_VAL_LOW,
+		DL_TIMER_CC_OCTL_INV_OUT_DISABLED, DL_TIMER_CC_OCTL_SRC_FUNCVAL,
+		DL_TIMERA_CAPTURE_COMPARE_0_INDEX);
+
+    DL_TimerA_setCaptCompUpdateMethod(PWM2_AT8236_INST, DL_TIMER_CC_UPDATE_METHOD_IMMEDIATE, DL_TIMERA_CAPTURE_COMPARE_0_INDEX);
+    DL_TimerA_setCaptureCompareValue(PWM2_AT8236_INST, 0, DL_TIMER_CC_0_INDEX);
+
+    DL_TimerA_setCaptureCompareOutCtl(PWM2_AT8236_INST, DL_TIMER_CC_OCTL_INIT_VAL_LOW,
+		DL_TIMER_CC_OCTL_INV_OUT_DISABLED, DL_TIMER_CC_OCTL_SRC_FUNCVAL,
+		DL_TIMERA_CAPTURE_COMPARE_1_INDEX);
+
+    DL_TimerA_setCaptCompUpdateMethod(PWM2_AT8236_INST, DL_TIMER_CC_UPDATE_METHOD_IMMEDIATE, DL_TIMERA_CAPTURE_COMPARE_1_INDEX);
+    DL_TimerA_setCaptureCompareValue(PWM2_AT8236_INST, 0, DL_TIMER_CC_1_INDEX);
+
+    DL_TimerA_enableClock(PWM2_AT8236_INST);
+
+
+    
+    DL_TimerA_setCCPDirection(PWM2_AT8236_INST , DL_TIMER_CC0_OUTPUT | DL_TIMER_CC1_OUTPUT );
 
 
 }

@@ -10,6 +10,8 @@ SYSCFG_SRCS += \
 
 C_SRCS += \
 ../DL_OLED.c \
+../angle_ctrl.c \
+../at8236.c \
 ../bluetooth.c \
 ../control.c \
 ../delay.c \
@@ -20,7 +22,6 @@ E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/msp/m0p/startup_system_fil
 ../interrupt.c \
 ../key.c \
 ../myxunji.c \
-../tb6612.c \
 ../vofa_debug.c 
 
 GEN_CMDS += \
@@ -33,6 +34,8 @@ GEN_FILES += \
 
 C_DEPS += \
 ./DL_OLED.d \
+./angle_ctrl.d \
+./at8236.d \
 ./bluetooth.d \
 ./control.d \
 ./delay.d \
@@ -43,7 +46,6 @@ C_DEPS += \
 ./interrupt.d \
 ./key.d \
 ./myxunji.d \
-./tb6612.d \
 ./vofa_debug.d 
 
 GEN_OPTS += \
@@ -51,6 +53,8 @@ GEN_OPTS += \
 
 OBJS += \
 ./DL_OLED.o \
+./angle_ctrl.o \
+./at8236.o \
 ./bluetooth.o \
 ./control.o \
 ./delay.o \
@@ -61,7 +65,6 @@ OBJS += \
 ./interrupt.o \
 ./key.o \
 ./myxunji.o \
-./tb6612.o \
 ./vofa_debug.o 
 
 GEN_MISC_FILES += \
@@ -71,6 +74,8 @@ GEN_MISC_FILES += \
 
 OBJS__QUOTED += \
 "DL_OLED.o" \
+"angle_ctrl.o" \
+"at8236.o" \
 "bluetooth.o" \
 "control.o" \
 "delay.o" \
@@ -81,7 +86,6 @@ OBJS__QUOTED += \
 "interrupt.o" \
 "key.o" \
 "myxunji.o" \
-"tb6612.o" \
 "vofa_debug.o" 
 
 GEN_MISC_FILES__QUOTED += \
@@ -91,6 +95,8 @@ GEN_MISC_FILES__QUOTED += \
 
 C_DEPS__QUOTED += \
 "DL_OLED.d" \
+"angle_ctrl.d" \
+"at8236.d" \
 "bluetooth.d" \
 "control.d" \
 "delay.d" \
@@ -101,7 +107,6 @@ C_DEPS__QUOTED += \
 "interrupt.d" \
 "key.d" \
 "myxunji.d" \
-"tb6612.d" \
 "vofa_debug.d" 
 
 GEN_FILES__QUOTED += \
@@ -111,6 +116,8 @@ GEN_FILES__QUOTED += \
 
 C_SRCS__QUOTED += \
 "../DL_OLED.c" \
+"../angle_ctrl.c" \
+"../at8236.c" \
 "../bluetooth.c" \
 "../control.c" \
 "../delay.c" \
@@ -121,7 +128,6 @@ C_SRCS__QUOTED += \
 "../interrupt.c" \
 "../key.c" \
 "../myxunji.c" \
-"../tb6612.c" \
 "../vofa_debug.c" 
 
 SYSCFG_SRCS__QUOTED += \

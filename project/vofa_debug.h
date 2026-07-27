@@ -8,5 +8,6 @@
 void Uart_DebugSendString(const char *str);
 void Uart_DebugSendHexByte(uint8_t value);
 void Uart_DebugSendAngle(void);
+void Uart_BlueSendString(const char *str);
 
 #endif

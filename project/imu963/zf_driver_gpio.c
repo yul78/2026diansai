@@ -1,7 +1,8 @@
 #include "zf_driver_gpio.h"
 
 static GPIO_Regs *gpio_port(gpio_pin_enum pin) {
-    return (pin == IMU963RA_GPIO_SCL) ? IMU_IIC_IMU_SCL_PORT : IMU_IIC_IMU_SDA_PORT;
+    (void) pin;
+    return IMU_IIC_PORT;
 }
 
 static uint32 gpio_mask(gpio_pin_enum pin) {

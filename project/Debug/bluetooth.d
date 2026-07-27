@@ -83,8 +83,7 @@ bluetooth.o: ../bluetooth.c ../bluetooth.h \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/dl_vref.h \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/dl_wwdt.h \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_interrupt.h \
- E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_systick.h \
- ../tb6612.h
+ E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_systick.h
 ../bluetooth.h:
 ti_msp_dl_config.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/msp/msp.h:
@@ -169,4 +168,3 @@ E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/dl_vref.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/dl_wwdt.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_interrupt.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_systick.h:
-../tb6612.h:

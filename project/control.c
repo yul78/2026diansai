@@ -1,6 +1,6 @@
 #include "control.h"
 #include "encoder.h"
-#include "tb6612.h"
+
 
 #define CONTROL_WHEEL_DIAMETER_MM 65.0f
 #define CONTROL_ENCODER_PULSES_PER_REV 450.0f

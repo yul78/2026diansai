@@ -14,6 +14,16 @@ void Uart_DebugSendString(const char *str) {
     }
 }
 
+void Uart_BlueSendString(const char *str) {
+    // 循环遍历字符串，直到遇到结束符 '\0'
+    while (*str != '\0') {
+        // 阻塞式发送当前字符
+        // 该函数会等待直到数据被发送到移位寄存器
+        DL_UART_Main_transmitDataBlocking(UART_BT_INST, (uint8_t)*str);
+        str++; // 指向下一个字符
+    }
+}
+
 void Uart_DebugSendHexByte(uint8_t value) {
     static const char hex[] = "0123456789ABCDEF";
     char text[3];

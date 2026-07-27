@@ -1,6 +1,10 @@
 #include "interrupt.h"
+#include "at8236.h"
+
+#define AT8236_PID_DEBUG_TICKS 10U
 
 volatile uint8_t imu963ra_update_flag = 0U;
+volatile uint8_t at8236PID_update_flag = 0U;
 volatile uint8_t imu963ra_display_flag = 0U;
 volatile uint32_t imu963ra_tick_ms = 0U;
 
@@ -45,19 +49,28 @@ void TIMER_TICK_INST_IRQHandler(void)
         // 在这里执行你的 1ms 任务
         // 例如：软件计数器累加
         static uint8_t tick_10ms = 0U;
-        static uint8_t tick_100ms = 0U;
+        static uint8_t tick_15ms = 0U;
+        static uint8_t at8236_pid_debug_tick = 0U;
 
         imu963ra_tick_ms++;
         tick_10ms++;
-        tick_100ms++;
+        tick_15ms++;
         if (tick_10ms >= 10U) {
             tick_10ms = 0U;
             // 每 10ms 执行一次的任务
             Encoder_GetSpeeds(&l_speed_now, &r_speed_now);
+            AT8236_PID_Update(l_speed_now, r_speed_now);
             imu963ra_update_flag = 1U;
+
+            at8236_pid_debug_tick++;
+            if (at8236_pid_debug_tick >= AT8236_PID_DEBUG_TICKS) {
+                at8236_pid_debug_tick = 0U;
+                at8236PID_update_flag = 1U;
+            }
         }
-        if (tick_100ms >= 100U) {
-            tick_100ms = 0U;
+        if (tick_15ms >= 15U) {
+            tick_15ms = 0U;
+            
         }
     }
 }

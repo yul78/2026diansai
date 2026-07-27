@@ -1,5 +1,5 @@
 #include "bluetooth.h"
-#include "tb6612.h"
+
 
 /*
     图形化配置说明
@@ -39,23 +39,23 @@ void Bluetooth_Task(void)
     switch (cmd) {
     case 'F':
     case 'f':
-        TB6612_SetMotors(BT_DEFAULT_SPEED, BT_DEFAULT_SPEED);
+        //TB6612_SetMotors(BT_DEFAULT_SPEED, BT_DEFAULT_SPEED);
         break;
     case 'B':
     case 'b':
-        TB6612_SetMotors(-BT_DEFAULT_SPEED, -BT_DEFAULT_SPEED);
+        //TB6612_SetMotors(-BT_DEFAULT_SPEED, -BT_DEFAULT_SPEED);
         break;
     case 'L':
     case 'l':
-        TB6612_SetMotors(-BT_DEFAULT_SPEED, BT_DEFAULT_SPEED);
+        //TB6612_SetMotors(-BT_DEFAULT_SPEED, BT_DEFAULT_SPEED);
         break;
     case 'R':
     case 'r':
-        TB6612_SetMotors(BT_DEFAULT_SPEED, -BT_DEFAULT_SPEED);
+        //TB6612_SetMotors(BT_DEFAULT_SPEED, -BT_DEFAULT_SPEED);
         break;
     case 'S':
     case 's':
-        TB6612_Stop();
+        //TB6612_Stop();
         break;
     default:
         break;
