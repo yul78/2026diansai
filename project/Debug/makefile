@@ -20,6 +20,7 @@ ORDERED_OBJS += \
 "./ti_msp_dl_config.o" \
 "./startup_mspm0g350x_ticlang.o" \
 "./encoder.o" \
+"./f103_uart.o" \
 "./interrupt.o" \
 "./key.o" \
 "./myxunji.o" \
@@ -155,8 +156,8 @@ project.out: $(OBJS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(GEN_MISC_FILES__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "DL_OLED.o" "angle_ctrl.o" "at8236.o" "bluetooth.o" "control.o" "delay.o" "empty.o" "ti_msp_dl_config.o" "startup_mspm0g350x_ticlang.o" "encoder.o" "interrupt.o" "key.o" "myxunji.o" "vofa_debug.o" "imu963\FusionAhrs.o" "imu963\FusionOffset.o" "imu963\imu963ra_attitude.o" "imu963\zf_device_imu963ra.o" "imu963\zf_driver_gpio.o" "imu963\zf_driver_soft_iic.o" 
-	-$(RM) "DL_OLED.d" "angle_ctrl.d" "at8236.d" "bluetooth.d" "control.d" "delay.d" "empty.d" "ti_msp_dl_config.d" "startup_mspm0g350x_ticlang.d" "encoder.d" "interrupt.d" "key.d" "myxunji.d" "vofa_debug.d" "imu963\FusionAhrs.d" "imu963\FusionOffset.d" "imu963\imu963ra_attitude.d" "imu963\zf_device_imu963ra.d" "imu963\zf_driver_gpio.d" "imu963\zf_driver_soft_iic.d" 
+	-$(RM) "DL_OLED.o" "angle_ctrl.o" "at8236.o" "bluetooth.o" "control.o" "delay.o" "empty.o" "ti_msp_dl_config.o" "startup_mspm0g350x_ticlang.o" "encoder.o" "f103_uart.o" "interrupt.o" "key.o" "myxunji.o" "vofa_debug.o" "imu963\FusionAhrs.o" "imu963\FusionOffset.o" "imu963\imu963ra_attitude.o" "imu963\zf_device_imu963ra.o" "imu963\zf_driver_gpio.o" "imu963\zf_driver_soft_iic.o" 
+	-$(RM) "DL_OLED.d" "angle_ctrl.d" "at8236.d" "bluetooth.d" "control.d" "delay.d" "empty.d" "ti_msp_dl_config.d" "startup_mspm0g350x_ticlang.d" "encoder.d" "f103_uart.d" "interrupt.d" "key.d" "myxunji.d" "vofa_debug.d" "imu963\FusionAhrs.d" "imu963\FusionOffset.d" "imu963\imu963ra_attitude.d" "imu963\zf_device_imu963ra.d" "imu963\zf_driver_gpio.d" "imu963\zf_driver_soft_iic.d" 
 	-@echo ' '
 
 .PHONY: all clean dependents

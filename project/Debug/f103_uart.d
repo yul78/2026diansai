@@ -1,6 +1,6 @@
 # FIXED
 
-empty.o: ../empty.c \
+f103_uart.o: ../f103_uart.c ../f103_uart.h \
  ti_msp_dl_config.h \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/msp/msp.h \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/DeviceFamily.h \
@@ -84,9 +84,8 @@ empty.o: ../empty.c \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/dl_wwdt.h \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_interrupt.h \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_systick.h \
- ../encoder.h ../DL_OLED.h ../bluetooth.h ../interrupt.h \
- ../vofa_debug.h ../key.h ../delay.h ../imu963/zf_device_imu963ra.h \
- ../imu963/zf_common_typedef.h ../at8236.h ../myxunji.h ../f103_uart.h
+ ../imu963/zf_device_imu963ra.h ../imu963/zf_common_typedef.h
+../f103_uart.h:
 ti_msp_dl_config.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/msp/msp.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/DeviceFamily.h:
@@ -170,15 +169,5 @@ E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/dl_vref.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/dl_wwdt.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_interrupt.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_systick.h:
-../encoder.h:
-../DL_OLED.h:
-../bluetooth.h:
-../interrupt.h:
-../vofa_debug.h:
-../key.h:
-../delay.h:
 ../imu963/zf_device_imu963ra.h:
 ../imu963/zf_common_typedef.h:
-../at8236.h:
-../myxunji.h:
-../f103_uart.h:

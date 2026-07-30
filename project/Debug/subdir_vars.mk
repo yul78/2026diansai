@@ -19,6 +19,7 @@ C_SRCS += \
 ./ti_msp_dl_config.c \
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/msp/m0p/startup_system_files/ticlang/startup_mspm0g350x_ticlang.c \
 ../encoder.c \
+../f103_uart.c \
 ../interrupt.c \
 ../key.c \
 ../myxunji.c \
@@ -43,6 +44,7 @@ C_DEPS += \
 ./ti_msp_dl_config.d \
 ./startup_mspm0g350x_ticlang.d \
 ./encoder.d \
+./f103_uart.d \
 ./interrupt.d \
 ./key.d \
 ./myxunji.d \
@@ -62,6 +64,7 @@ OBJS += \
 ./ti_msp_dl_config.o \
 ./startup_mspm0g350x_ticlang.o \
 ./encoder.o \
+./f103_uart.o \
 ./interrupt.o \
 ./key.o \
 ./myxunji.o \
@@ -83,6 +86,7 @@ OBJS__QUOTED += \
 "ti_msp_dl_config.o" \
 "startup_mspm0g350x_ticlang.o" \
 "encoder.o" \
+"f103_uart.o" \
 "interrupt.o" \
 "key.o" \
 "myxunji.o" \
@@ -104,6 +108,7 @@ C_DEPS__QUOTED += \
 "ti_msp_dl_config.d" \
 "startup_mspm0g350x_ticlang.d" \
 "encoder.d" \
+"f103_uart.d" \
 "interrupt.d" \
 "key.d" \
 "myxunji.d" \
@@ -125,6 +130,7 @@ C_SRCS__QUOTED += \
 "./ti_msp_dl_config.c" \
 "E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/msp/m0p/startup_system_files/ticlang/startup_mspm0g350x_ticlang.c" \
 "../encoder.c" \
+"../f103_uart.c" \
 "../interrupt.c" \
 "../key.c" \
 "../myxunji.c" \

@@ -6,10 +6,12 @@
 #include "key.h"
 #include "delay.h"
 #include "vofa_debug.h"
+#include "imu963/zf_device_imu963ra.h"
 #include <stdio.h>
 #include "at8236.h"
 // #include "angle_ctrl.h"      // 陀螺仪航向控制已停用，文件保留备用
 #include "myxunji.h"
+#include "f103_uart.h"
 
 int32_t l_speed_now, r_speed_now;
 volatile uint8_t question2_running_flag = 0;
@@ -25,7 +27,9 @@ uint8_t question_running_flag = 0;
 uint32_t run_start_ms = 0U;
 uint32_t run_elapsed_ms = 0U;
 uint32_t run_last_oled_ms = 0U;
-uint32_t q2_last_debug_ms = 0U;
+
+
+uint8_t imu963ra_acc_ready = 0U;
 
 void TimerTick_Init(void);
 
@@ -42,22 +46,29 @@ int main(void)
 
     Bluetooth_Init();
     TimerTick_Init();
+
+    if(imu963ra_init() == IMU963RA_INIT_OK)
+    {
+        imu963ra_acc_ready = 1U;
+    }
     
     OLED_ShowString(1, 1, "Q num:");
     OLED_ShowString(2, 1, "T(ms):");
     OLED_ShowNum(2, 7, run_elapsed_ms, 6);
 
-    /*
-     * 调试表头只在上电初始化时发送一次，不计入第二问运行时间。
-     * 后续每一行依次为：时间、中间两路状态、PID误差、P/I/D项、
-     * PID输出、左右目标速度、左右编码器实测速度。
-     */
-    Uart_DebugSendString("ms,bits,state,error,p,i,d,out,targetL,targetR,speedL,speedR\r\n");
-
     while (1) {
-
+        DL_UART_Main_transmitDataBlocking(UART_DEBUG_INST, 0x02);
         /* 本轮主循环只读取一次系统时间，单位为毫秒。 */
         uint32_t now_ms = system_tick_ms;
+
+        if(imu963ra_update_flag)
+        {
+            imu963ra_update_flag = 0U;
+            if(imu963ra_acc_ready)
+            {
+                F103_Trans_SendImu963Acceleration();
+            }
+        }
 
         OLED_ShowNum(1,8,question_number,1);
 
@@ -86,7 +97,6 @@ int main(void)
                         q2_stop_line_flag = 0U;
                         question2_running_flag = 1U;
                         Xunji_Q2_Reset();
-                        q2_last_debug_ms = 0U;
                         /* 启动后立即计算一次，不必等待下一个10ms节拍。 */
                         xunji_update_flag = 1U;
                         break;
@@ -137,15 +147,11 @@ int main(void)
              */
             if(q2_stop_line_flag)
             {
-                char stop_str[40];
-
                 question2_running_flag = 0U;
                 question_running_flag = 0U;
                 AT8236_PID_Stop();
                 OLED_ShowNum(2, 7, run_elapsed_ms, 6);
-                sprintf(stop_str, "STOP,%lu,XJ456=1\r\n",
-                    (unsigned long)run_elapsed_ms);
-                Uart_DebugSendString(stop_str);
+                
             }
 
             /*
@@ -161,7 +167,6 @@ int main(void)
 
                 if(stop_line_found)
                 {
-                    char stop_str[40];
 
                     question2_running_flag = 0U;
                     question_running_flag = 0U;
@@ -169,11 +174,7 @@ int main(void)
                     AT8236_Stop();
                     OLED_ShowNum(2, 7, run_elapsed_ms, 6);
 
-                    /* 电机先停止，再发送终点时的完整8路状态。 */
-                    sprintf(stop_str, "STOP,%lu,%u\r\n",
-                        (unsigned long)run_elapsed_ms,
-                        (unsigned int)Xunji_Q2_Debug.sensor_bits);
-                    Uart_DebugSendString(stop_str);
+                    
                 }
                 else
                 {
@@ -185,39 +186,7 @@ int main(void)
                 }
             }
 
-            /*
-             * UART_BT为9600波特率且发送函数是阻塞式，因此每1000ms发送一行。
-             * 降低调试频率可以减少主循环阻塞，使10ms循迹更新更加连续。
-             */
-            if(question2_running_flag &&
-               ((run_elapsed_ms - q2_last_debug_ms) >= 1000U))
-            {
-                int32_t speed_l;
-                int32_t speed_r;
-                char str[120];
-
-                q2_last_debug_ms = run_elapsed_ms;
-                __disable_irq();
-                speed_l = l_speed_now;
-                speed_r = r_speed_now;
-                __enable_irq();
-
-                sprintf(str, "%lu,%u,%u,%d,%d,%d,%d,%d,%d,%d,%ld,%ld\r\n",
-                    (unsigned long)run_elapsed_ms,
-                    (unsigned int)Xunji_Q2_Debug.sensor_bits,
-                    (unsigned int)Xunji_Q2_Debug.sensor_state,
-                    (int)Xunji_Q2_Debug.error,
-                    (int)Xunji_Q2_Debug.p_term,
-                    (int)Xunji_Q2_Debug.i_term,
-                    (int)Xunji_Q2_Debug.d_term,
-                    (int)Xunji_Q2_Debug.output,
-                    (int)Xunji_Q2_Debug.left_target,
-                    (int)Xunji_Q2_Debug.right_target,
-                    (long)speed_l,
-                    (long)speed_r);
-                Uart_DebugSendString(str);
-            }
-        }
+        } 
         //第四问
         if(question4_running_flag)
         {

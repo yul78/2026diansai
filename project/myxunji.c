@@ -14,14 +14,14 @@
  * 第一轮调试先关闭积分(KI=0)，因为数字量传感器的位置分辨率较低，
  * 积分很容易累积后造成左右慢摆；先根据串口数据把KP、KD调稳，再考虑KI。
  */
-#define Q2_PID_KP                       8
+#define Q2_PID_KP                       9
 #define Q2_PID_KI                       0
 #define Q2_PID_KD                       2
 #define Q2_PID_SCALE                    100
 #define Q2_PID_INTEGRAL_LIMIT           600
 #define Q2_PID_OUTPUT_LIMIT             12
 #define Q2_LOST_ERROR                   200
-#define Q2_NORMAL_SPEED                 23
+#define Q2_NORMAL_SPEED                 24
 #define Q2_LOST_SPEED                   14
 #define Q2_SPEED_UP_STEP                 1
 #define Q2_SPEED_DOWN_STEP               2
@@ -189,7 +189,7 @@ uint8_t Xunji_Q2_Task(int16_t* left_speed, int16_t* right_speed)
     }
 
     /*
-     * XJ4、XJ5无法区分“居中的弯道”和直线，因此正常循迹统一使用速度23，
+     * XJ4、XJ5无法区分“居中的弯道”和直线，因此正常循迹统一使用速度24，
      * 避免原来的直线/弯道模式反复切换。只有两路都丢线时才降到14；
      * 恢复轨迹后每10ms升1，丢线时每10ms降2，避免速度突变。
      */

@@ -198,9 +198,9 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 #define GPIO_UART_DEBUG_IOMUX_TX                                 (IOMUX_PINCM36)
 #define GPIO_UART_DEBUG_IOMUX_RX_FUNC                  IOMUX_PINCM35_PF_UART3_RX
 #define GPIO_UART_DEBUG_IOMUX_TX_FUNC                  IOMUX_PINCM36_PF_UART3_TX
-#define UART_DEBUG_BAUD_RATE                                              (9600)
-#define UART_DEBUG_IBRD_80_MHZ_9600_BAUD                                   (520)
-#define UART_DEBUG_FBRD_80_MHZ_9600_BAUD                                    (53)
+#define UART_DEBUG_BAUD_RATE                                            (115200)
+#define UART_DEBUG_IBRD_80_MHZ_115200_BAUD                                  (43)
+#define UART_DEBUG_FBRD_80_MHZ_115200_BAUD                                  (26)
 
 
 

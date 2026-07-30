@@ -8,7 +8,7 @@
 void Encoder_IRQHandler(void);
 
 extern int32_t l_speed_now, r_speed_now;
-// extern volatile uint8_t imu963ra_update_flag;   // 陀螺仪已停用
+extern volatile uint8_t imu963ra_update_flag; 
 // extern volatile uint8_t imu963ra_display_flag;  // 陀螺仪已停用
 // extern volatile uint32_t imu963ra_tick_ms;      // 陀螺仪已停用
 extern volatile uint8_t at8236PID_update_flag;

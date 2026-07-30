@@ -4,7 +4,7 @@
 
 #define AT8236_PID_DEBUG_TICKS 10U
 
-// volatile uint8_t imu963ra_update_flag = 0U;   // 陀螺仪已停用
+volatile uint8_t imu963ra_update_flag = 0U;  
 volatile uint8_t at8236PID_update_flag = 0U;
 // volatile uint8_t imu963ra_display_flag = 0U;  // 陀螺仪已停用
 volatile uint8_t xunji_update_flag = 0U;
@@ -54,13 +54,13 @@ void TIMER_TICK_INST_IRQHandler(void)
         // 在这里执行你的 1ms 任务
         // 例如：软件计数器累加
         static uint8_t tick_10ms = 0U;
-        // static uint8_t tick_15ms = 0U;        // 原陀螺仪更新节拍，现已停用
+        static uint8_t tick_15ms = 0U;        // 原陀螺仪更新节拍，现已停用
         //static uint8_t at8236_pid_debug_tick = 0U;
 
         // imu963ra_tick_ms++;                   // 陀螺仪已停用
         system_tick_ms++;
         tick_10ms++;
-        // tick_15ms++;                          // 陀螺仪已停用
+        tick_15ms++;                          // 陀螺仪已停用
         if (tick_10ms >= 10U) {
             tick_10ms = 0U;
             // 每 10ms 执行一次的任务
@@ -88,9 +88,9 @@ void TIMER_TICK_INST_IRQHandler(void)
             //     at8236PID_update_flag = 1U;
             // }
         }
-        // if (tick_15ms >= 15U) {
-        //     tick_15ms = 0U;
-        //     imu963ra_update_flag = 1U;
-        // }
+        if (tick_15ms >= 15U) {
+            tick_15ms = 0U;
+            imu963ra_update_flag = 1U;
+        }
     }
 }
