@@ -84,8 +84,7 @@ interrupt.o: ../interrupt.c ../interrupt.h ../encoder.h \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/dl_wwdt.h \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_interrupt.h \
  E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_systick.h \
- ../vofa_debug.h ../imu963/imu963ra_attitude.h \
- ../imu963/zf_common_typedef.h ../at8236.h
+ ../vofa_debug.h ../at8236.h ../myxunji.h ../delay.h ../DL_OLED.h
 ../interrupt.h:
 ../encoder.h:
 ti_msp_dl_config.h:
@@ -172,6 +171,7 @@ E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/dl_wwdt.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_interrupt.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_systick.h:
 ../vofa_debug.h:
-../imu963/imu963ra_attitude.h:
-../imu963/zf_common_typedef.h:
 ../at8236.h:
+../myxunji.h:
+../delay.h:
+../DL_OLED.h:

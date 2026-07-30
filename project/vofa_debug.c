@@ -9,7 +9,7 @@ void Uart_DebugSendString(const char *str) {
     while (*str != '\0') {
         // 阻塞式发送当前字符
         // 该函数会等待直到数据被发送到移位寄存器
-        DL_UART_Main_transmitDataBlocking(UART_DEBUG_INST, (uint8_t)*str);
+        DL_UART_Main_transmitDataBlocking(UART_BT_INST, (uint8_t)*str);
         str++; // 指向下一个字符
     }
 }
@@ -34,15 +34,18 @@ void Uart_DebugSendHexByte(uint8_t value) {
     Uart_DebugSendString(text);
 }
 
-void Uart_DebugSendAngle(void)
-{
-    char str[50];
-    imu963ra_attitude_angle_struct angle;
-
-    if (imu963ra_attitude_is_ready()) 
-    {
-        imu963ra_attitude_get_euler(&angle);
-    }
-    sprintf(str, "pitch:%.2f roll:%.2f yaw:%.2f\r\n", angle.pitch, angle.roll, angle.yaw);
-    Uart_DebugSendString(str);
-}
+/*
+ * 陀螺仪角度调试已停用，代码保留在这里，后续需要时取消注释即可。
+ */
+// void Uart_DebugSendAngle(void)
+// {
+//     char str[50];
+//     imu963ra_attitude_angle_struct angle;
+//
+//     if (imu963ra_attitude_is_ready())
+//     {
+//         imu963ra_attitude_get_euler(&angle);
+//     }
+//     sprintf(str, "pitch:%.2f roll:%.2f yaw:%.2f\r\n", angle.pitch, angle.roll, angle.yaw);
+//     Uart_DebugSendString(str);
+// }
