@@ -87,7 +87,8 @@ empty.o: ../empty.c \
  ../encoder.h ../DL_OLED.h ../bluetooth.h ../interrupt.h \
  ../vofa_debug.h ../imu963/imu963ra_attitude.h \
  ../imu963/zf_common_typedef.h ../key.h ../delay.h \
- ../imu963/zf_device_imu963ra.h ../at8236.h ../angle_ctrl.h
+ ../imu963/zf_device_imu963ra.h ../at8236.h ../angle_ctrl.h \
+ ../myxunji.h
 ti_msp_dl_config.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/msp/msp.h:
 E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/devices/DeviceFamily.h:
@@ -183,3 +184,4 @@ E:/2026diansai/mspm0_sdk_2_10_00_04/source/ti/driverlib/m0p/dl_systick.h:
 ../imu963/zf_device_imu963ra.h:
 ../at8236.h:
 ../angle_ctrl.h:
+../myxunji.h:

@@ -28,9 +28,9 @@ static uint8_t encoderB_last;
 void Encoder_Init(void)
 {
     EncoderA.count = 0;
-    EncoderA.polarity = -1;
+    EncoderA.polarity = 1;
     EncoderB.count = 0;
-    EncoderB.polarity = 1;
+    EncoderB.polarity = -1;
 
     encoderA_last = (DL_GPIO_readPins(ENCODER_PORT, ENCODER_MOTOR_A_A_PIN) ? 2 : 0)
                   | (DL_GPIO_readPins(ENCODER_PORT, ENCODER_MOTOR_A_B_PIN) ? 1 : 0);

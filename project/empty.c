@@ -11,20 +11,24 @@
 #include <stdio.h>
 #include "at8236.h"
 #include "angle_ctrl.h"
+#include "myxunji.h"
 
-#define ANGLE_CTRL_BASE_SPEED          0
-#define ANGLE_CTRL_DEBUG_DIVIDER       10U
+// #define ANGLE_CTRL_BASE_SPEED          0
+// #define ANGLE_CTRL_DEBUG_DIVIDER       10U
+// #define IMU963RA_OLED_ROWS             (4U)
+// #define IMU963RA_OLED_COLUMNS          (16U)
+// #define IMU963RA_ANGLE_COLUMN          (6U)
+// #define IMU963RA_ANGLE_TEXT_LENGTH     (6U)
+// static uint8_t imu963ra_ready;
+// static uint8_t imu963ra_init_state;
+//static uint8_t angle_ctrl_ready;
+//imu963ra_attitude_angle_struct imu963_angle;
 
 int32_t l_speed_now, r_speed_now;
-static uint8_t imu963ra_ready;
-static uint8_t imu963ra_init_state;
-static uint8_t angle_ctrl_ready;
-imu963ra_attitude_angle_struct imu963_angle;
-
-#define IMU963RA_OLED_ROWS             (4U)
-#define IMU963RA_OLED_COLUMNS          (16U)
-#define IMU963RA_ANGLE_COLUMN          (6U)
-#define IMU963RA_ANGLE_TEXT_LENGTH     (6U)
+uint8_t question2_running_flag = 0;
+uint8_t question4_running_flag = 0;
+uint8_t question5_running_flag = 0;
+uint8_t question_number = 1;
 
 void TimerTick_Init(void);
 
@@ -33,40 +37,48 @@ int main(void)
     SYSCFG_DL_init();
     AJ_Init();
 
-    imu963ra_init_state = imu963ra_init();
-    imu963ra_ready = (imu963ra_init_state == IMU963RA_INIT_OK);
-    if (imu963ra_ready) {
-        imu963ra_attitude_init(100.0f);
-    }
-
-    while(1)
-    {
-        if(AJ1_IsPressed())
-            break;
-    }
+    // imu963ra_init_state = imu963ra_init();
+    // imu963ra_ready = (imu963ra_init_state == IMU963RA_INIT_OK);
+    // if (imu963ra_ready) {
+    //     imu963ra_attitude_init(100.0f);
+    // }
+    // AngleCtrl_Init();
+    // AngleCtrl_SetTarget(0.0f);
+    // angle_ctrl_ready = 1U;
 
     AT8236_Init();
     AT8236_PID_Init();
-    AngleCtrl_Init();
-    AngleCtrl_SetTarget(0.0f);
-    angle_ctrl_ready = 1U;
+    
     Encoder_Init();
     OLED_Init();
 
     Bluetooth_Init();
     TimerTick_Init();
     
-    
+    OLED_ShowString(1, 1, "Q num:");
     while (1) {
-    
+        OLED_ShowNum(1,8,question_number,1);
         /**************按键测试************ */
 
         if(AJ1_IsPressed())
         {
-
+            question_number++;
+            if(question_number > 6) question_number = 1;
         }
         if(AJ2_IsPressed())
         {
+            switch(question_number)
+            {
+                case 2:
+                    question2_running_flag = 1;
+                    break;
+                case 4:
+                    question4_running_flag = 1;
+                    break;
+                case 5:
+                    question5_running_flag = 1;
+                    break;
+            }
 
         }
         if(AJ3_IsPressed())
@@ -77,8 +89,26 @@ int main(void)
         {
 
         }
-        
+    
+        /***************题目运行**************/
+        //第二问
+        if(question2_running_flag)
+        {
+            OLED_ShowSignedNum(2,1,22, 2);
+            static int16_t left_speed_load = 0, right_speed_load = 0;
+            Xunji_Task(&left_speed_load, &right_speed_load);
+            AT8236_PID_SetTargets(left_speed_load, right_speed_load);
+        }
+        //第四问
+        if(question4_running_flag)
+        {
 
+        }
+        //第五问
+        if(question5_running_flag)
+        {
+
+        }
         /*************循迹测试**************/
 
         // static int16_t left_speed_load = 600, right_speed_load = 600;
@@ -91,62 +121,60 @@ int main(void)
         
         /***********************************/
 
-        Bluetooth_Task();
-
         /***************IMU963部分********************/
-        static uint32_t last_imu_update_ms = 0U;
-        static uint8_t angle_ctrl_debug_count = 0U;
-        if (imu963ra_ready && imu963ra_update_flag) {
-            uint32_t now_ms;
-            uint32_t elapsed_ms;
-            __disable_irq();
-            imu963ra_update_flag = 0U;
-            now_ms = imu963ra_tick_ms;
-            __enable_irq();
+        // static uint32_t last_imu_update_ms = 0U;
+        // static uint8_t angle_ctrl_debug_count = 0U;
+        // if (imu963ra_ready && imu963ra_update_flag) {
+        //     uint32_t now_ms;
+        //     uint32_t elapsed_ms;
+        //     __disable_irq();
+        //     imu963ra_update_flag = 0U;
+        //     now_ms = imu963ra_tick_ms;
+        //     __enable_irq();
 
-            elapsed_ms = now_ms - last_imu_update_ms;
-            last_imu_update_ms = now_ms;
-            imu963ra_attitude_update_with_delta_time((float)elapsed_ms * 0.001f);
-            imu963ra_attitude_get_euler(&imu963_angle);
+        //     elapsed_ms = now_ms - last_imu_update_ms;
+        //     last_imu_update_ms = now_ms;
+        //     imu963ra_attitude_update_with_delta_time((float)elapsed_ms * 0.001f);
+        //     imu963ra_attitude_get_euler(&imu963_angle);
 
-            AngleCtrl_UpdateMotors(ANGLE_CTRL_BASE_SPEED, imu963_angle.yaw);
+        //     AngleCtrl_UpdateMotors(ANGLE_CTRL_BASE_SPEED, imu963_angle.yaw);
 
-            angle_ctrl_debug_count++;
-            if (angle_ctrl_debug_count >= ANGLE_CTRL_DEBUG_DIVIDER) {
-                int32_t targetA;
-                int32_t targetB;
-                int32_t speedA;
-                int32_t speedB;
-                int32_t outputA;
-                int32_t outputB;
-                char str[140];
+        //     angle_ctrl_debug_count++;
+        //     if (angle_ctrl_debug_count >= ANGLE_CTRL_DEBUG_DIVIDER) {
+        //         int32_t targetA;
+        //         int32_t targetB;
+        //         int32_t speedA;
+        //         int32_t speedB;
+        //         int32_t outputA;
+        //         int32_t outputB;
+        //         char str[140];
 
-                angle_ctrl_debug_count = 0U;
-                __disable_irq();
-                targetA = AT8236_PIDA.target_speed;
-                targetB = AT8236_PIDB.target_speed;
-                speedA = AT8236_PIDA.measured_speed;
-                speedB = AT8236_PIDB.measured_speed;
-                outputA = AT8236_PIDA.output;
-                outputB = AT8236_PIDB.output;
-                __enable_irq();
+        //         angle_ctrl_debug_count = 0U;
+        //         __disable_irq();
+        //         targetA = AT8236_PIDA.target_speed;
+        //         targetB = AT8236_PIDB.target_speed;
+        //         speedA = AT8236_PIDA.measured_speed;
+        //         speedB = AT8236_PIDB.measured_speed;
+        //         outputA = AT8236_PIDA.output;
+        //         outputB = AT8236_PIDB.output;
+        //         __enable_irq();
 
-                sprintf(str, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n",
-                    (int)angle_ctrl_ready,
-                    (int)AngleCtrl_PID.target_angle,
-                    (int)AngleCtrl_PID.measured_angle,
-                    (int)AngleCtrl_PID.error,
-                    (int)AngleCtrl_PID.output,
-                    (int)AngleCtrl_PID.integral,
-                    (int)targetA,
-                    (int)targetB,
-                    (int)speedA,
-                    (int)speedB,
-                    (int)outputA,
-                    (int)outputB);
-                Uart_BlueSendString(str);
-            }
-        }
+        //         sprintf(str, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n",
+        //             (int)angle_ctrl_ready,
+        //             (int)AngleCtrl_PID.target_angle,
+        //             (int)AngleCtrl_PID.measured_angle,
+        //             (int)AngleCtrl_PID.error,
+        //             (int)AngleCtrl_PID.output,
+        //             (int)AngleCtrl_PID.integral,
+        //             (int)targetA,
+        //             (int)targetB,
+        //             (int)speedA,
+        //             (int)speedB,
+        //             (int)outputA,
+        //             (int)outputB);
+        //         Uart_BlueSendString(str);
+        //     }
+        // }
 
         // OLED_ShowFloat(1, 1, imu963_angle.pitch,2, 2);
         // OLED_ShowFloat(2, 1, imu963_angle.roll,2, 2);
