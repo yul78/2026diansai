@@ -9,6 +9,8 @@ volatile uint8_t at8236PID_update_flag = 0U;
 // volatile uint8_t imu963ra_display_flag = 0U;  // 陀螺仪已停用
 volatile uint8_t xunji_update_flag = 0U;
 volatile uint8_t q2_stop_line_flag = 0U;
+volatile uint8_t q56_pass_line_flag = 0U;
+volatile uint32_t q56_pass_line_tick_ms = 0U;
 // volatile uint32_t imu963ra_tick_ms = 0U;      // 陀螺仪已停用
 volatile uint32_t system_tick_ms = 0U;
 
@@ -17,6 +19,8 @@ extern uint8_t AJ2_pressed;
 extern uint8_t AJ3_pressed;
 extern uint8_t AJ4_pressed;
 extern volatile uint8_t question2_running_flag;
+extern volatile uint8_t question5_running_flag;
+extern volatile uint8_t question6_running_flag;
 
 void GROUP1_IRQHandler(void)
 {
@@ -65,6 +69,7 @@ void TIMER_TICK_INST_IRQHandler(void)
             tick_10ms = 0U;
             // 每 10ms 执行一次的任务
             Encoder_GetSpeeds(&l_speed_now, &r_speed_now);
+
             AT8236_PID_Update(l_speed_now, r_speed_now);
 
             /*
@@ -76,6 +81,24 @@ void TIMER_TICK_INST_IRQHandler(void)
                Xunji_Q2_StopLineDetected())
             {
                 q2_stop_line_flag = 1U;
+                AT8236_PID_Stop();
+            }
+
+            /*
+             * 第五、六问完成一整圈后，XJ4、XJ5、XJ6会同时扫到A点的
+             * 5cm横向启停线。按实际安装，起步时不会扫到该横线，所以这里
+             * 不增加起步屏蔽时间或距离。
+             *
+             * 在固定10ms中断中锁存检测时刻并立即停车，避免主循环正在读取
+             * IMU或发送串口数据时错过启停线。
+             */
+            if(((question5_running_flag != 0U) ||
+                (question6_running_flag != 0U)) &&
+               (q56_pass_line_flag == 0U) &&
+               Xunji_Q2_StopLineDetected())
+            {
+                q56_pass_line_tick_ms = system_tick_ms;
+                q56_pass_line_flag = 1U;
                 AT8236_PID_Stop();
             }
 

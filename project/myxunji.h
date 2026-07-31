@@ -37,6 +37,18 @@ typedef struct {
 
 extern Xunji_Q2PidDebug Xunji_Q2_Debug;
 
+/* 第四问直线阶段的调试数据，由Xunji_Q4_Task()在主循环中更新。 */
+typedef struct {
+    uint8_t sensor_bits;       /* 完整8路状态，仅用于观察，不全部参与控制 */
+    uint8_t middle_state;      /* bit0=XJ4，bit1=XJ5 */
+    int16_t base_speed;        /* 软启动或软刹车后的当前基础速度 */
+    int16_t correction;        /* XJ4、XJ5产生的方向修正量 */
+    int16_t left_target;       /* 左轮速度闭环目标值 */
+    int16_t right_target;      /* 右轮速度闭环目标值 */
+} Xunji_Q4Debug;
+
+extern Xunji_Q4Debug Xunji_Q4_Debug;
+
 uint8_t Xunji_Read_Hardware(uint8_t index);
 void Xunji_Task(int16_t* left_speed, int16_t* right_speed);
 void Xunji_Speed_Calc(int16_t* left_speed, int16_t* right_speed);
@@ -46,7 +58,17 @@ void MyXunji_PidTrackStraight(uint8_t bits, int16_t base_speed, int16_t* left_sp
 void Xunji_Q2_Reset(void);
 uint8_t Xunji_Q2_StopLineDetected(void);
 uint8_t Xunji_Q2_Task(int16_t* left_speed, int16_t* right_speed);
-void Xunji_Q4_Task(int16_t* left_speed, int16_t* right_speed);
-void Xunji_Q5_Task(int16_t* left_speed, int16_t* right_speed);
+void Xunji_Q4_Reset(void);
+void Xunji_Q4_RequestStop(void);
+uint8_t Xunji_Q4_Task(
+    uint32_t elapsed_ms, int16_t* left_speed, int16_t* right_speed);
+/* 第五问软启动椭圆循迹PID。 */
+void Xunji_Q5_Reset(void);
+void Xunji_Q5_Task(
+    uint32_t elapsed_ms, int16_t* left_speed, int16_t* right_speed);
+/* 第六问软启动椭圆循迹PID。 */
+void Xunji_Q6_Reset(void);
+void Xunji_Q6_Task(
+    uint32_t elapsed_ms, int16_t* left_speed, int16_t* right_speed);
 
 #endif

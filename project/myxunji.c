@@ -1,7 +1,23 @@
 #include "myxunji.h"
 
-#define XUNJI_FORWARD_4_SPEED          25
-#define XUNJI_FORWARD_5_SPEED          25
+/*
+ * 第四问只完成A到B的1.5m直线阶段。
+ * 软启动直接使用题目运行时间计算，不依赖主循环实际执行频率。
+ */
+#define Q4_MAX_SPEED                    28
+#define Q4_START_SPEED                   3
+#define Q4_TRACK_CORRECTION              1
+#define Q4_START_RAMP_INTERVAL_MS      300U
+#define Q4_BRAKE_RAMP_INTERVAL_MS       50U
+
+static int16_t q4_base_speed = 0;
+static int16_t q4_last_correction = 0;
+static uint8_t q4_stop_requested = 0U;
+static uint8_t q4_stop_ramp_started = 0U;
+static uint32_t q4_stop_start_ms = 0U;
+static int16_t q4_stop_start_speed = 0;
+
+Xunji_Q4Debug Xunji_Q4_Debug = {0};
 
 /*
  * 第二问严格只使用中间XJ4、XJ5两路做方向控制。
@@ -32,6 +48,41 @@ static int16_t q2_last_nonzero_error = 0;
 static int16_t q2_base_speed = Q2_NORMAL_SPEED;
 
 Xunji_Q2PidDebug Xunji_Q2_Debug = {0};
+
+/* 第五、六问目前使用相同PID参数，但分别设置速度，后续可以单独调节。 */
+#define Q56_PID_KP                       9
+#define Q56_PID_KI                       0
+#define Q56_PID_KD                       2
+#define Q56_PID_SCALE                  100
+#define Q56_PID_INTEGRAL_LIMIT         600
+#define Q56_PID_OUTPUT_LIMIT            12
+#define Q56_LOST_ERROR                 200
+#define Q56_SPEED_UP_STEP                1
+#define Q56_SPEED_DOWN_STEP              2
+
+/* 第五问速度参数，只修改这里不会影响第六问。 */
+#define Q5_NORMAL_SPEED                 24
+#define Q5_LOST_SPEED                   14
+#define Q5_START_SPEED                   5
+#define Q5_START_RAMP_INTERVAL_MS      150U
+
+/* 第六问速度参数，只修改这里不会影响第五问。 */
+#define Q6_NORMAL_SPEED                 24
+#define Q6_LOST_SPEED                   14
+#define Q6_START_SPEED                   5
+#define Q6_START_RAMP_INTERVAL_MS      150U
+
+/* 每一问独立保存自己的PID历史量和当前基础速度。 */
+typedef struct
+{
+    int32_t pid_integral;
+    int16_t pid_last_error;
+    int16_t last_nonzero_error;
+    int16_t base_speed;
+} Xunji_Q56State;
+
+static Xunji_Q56State q5_track_state = {0, 0, 0, Q5_START_SPEED};
+static Xunji_Q56State q6_track_state = {0, 0, 0, Q6_START_SPEED};
 
 //以下下是PID的参数
 #define MYXUNJI_PID_KP               180
@@ -257,49 +308,342 @@ uint8_t Xunji_Q2_Task(int16_t* left_speed, int16_t* right_speed)
     return 0U;
 }
 
-void Xunji_Q4_Task(int16_t* left_speed, int16_t* right_speed)
-{  
+static void Xunji_Q56_ResetCore(
+    Xunji_Q56State* state, int16_t start_speed)
+{
+    state->pid_integral = 0;
+    state->pid_last_error = 0;
+    state->last_nonzero_error = 0;
+    state->base_speed = start_speed;
+}
 
-    uint8_t bits = Xunji_Read_Bits();
+static void Xunji_Q56_TaskCore(
+    uint32_t elapsed_ms,
+    int16_t* left_speed,
+    int16_t* right_speed,
+    Xunji_Q56State* state,
+    int16_t normal_speed,
+    int16_t lost_speed,
+    int16_t start_speed,
+    uint32_t ramp_interval_ms)
+{
+    uint8_t bits;
+    uint8_t middle_state;
+    int16_t desired_speed;
+    int16_t startup_speed_limit;
+    int16_t error;
+    int16_t derivative;
+    int32_t output;
+    uint32_t ramp_speed;
 
-    if((bits & (1U << 0)) != 0U) //走完直线循迹，设置电机速度为0
+    if((left_speed == 0) || (right_speed == 0))
     {
-        *left_speed = 0;
-        *right_speed = 0;
         return;
     }
 
-    int16_t speed_error = 0;
-    if ((bits & (1U << 3)) != 0U) {speed_error = 3;}
-    else if ((bits & (1U << 4)) != 0U) {speed_error = -3;}
-    else if ((bits & (1U << 2)) != 0U) {speed_error = 5;}
-    else if ((bits & (1U << 5)) != 0U) {speed_error = -5;}
-    else if ((bits & (1U << 1)) != 0U) {speed_error = 8;}
-    else if ((bits & (1U << 6)) != 0U) {speed_error = -8;}
-    else if ((bits & (1U << 0)) != 0U) {speed_error = 15;}
-    else if ((bits & (1U << 7)) != 0U) {speed_error = -15;}
+    bits = Xunji_Read_Bits();
+    middle_state = (uint8_t)((bits >> 3) & 0x03U);
 
-    *left_speed = XUNJI_FORWARD_4_SPEED - speed_error;
-    *right_speed = XUNJI_FORWARD_4_SPEED + speed_error;
+    /*
+     * 只使用中间XJ4、XJ5两路计算方向误差。
+     * 其他红外对管即使在弯道扫到黑线，也不会参与第五、六问的方向控制。
+     */
+    if(middle_state == 0x01U)
+    {
+        error = 100;
+        state->last_nonzero_error = error;
+        desired_speed = normal_speed;
+    }
+    else if(middle_state == 0x02U)
+    {
+        error = -100;
+        state->last_nonzero_error = error;
+        desired_speed = normal_speed;
+    }
+    else if(middle_state == 0x03U)
+    {
+        error = 0;
+        desired_speed = normal_speed;
+    }
+    else
+    {
+        /*
+         * 中间两路都丢线时，按照最后一次偏离方向寻找黑线，并将基础速度
+         * 降到14。这样与第二问已验证的椭圆循迹行为保持一致。
+         */
+        if(state->last_nonzero_error > 0)
+        {
+            error = Q56_LOST_ERROR;
+        }
+        else if(state->last_nonzero_error < 0)
+        {
+            error = -Q56_LOST_ERROR;
+        }
+        else
+        {
+            error = 0;
+        }
+
+        desired_speed = lost_speed;
+    }
+
+    /*
+     * 软启动速度上限：0ms时为5，之后每150ms增加1，最大为24。
+     * 使用题目计时elapsed_ms计算，因此不会受主循环执行快慢影响。
+     */
+    ramp_speed = (uint32_t)start_speed +
+                 (elapsed_ms / ramp_interval_ms);
+    if(ramp_speed > (uint32_t)normal_speed)
+    {
+        ramp_speed = (uint32_t)normal_speed;
+    }
+    startup_speed_limit = (int16_t)ramp_speed;
+
+    if(desired_speed > startup_speed_limit)
+    {
+        desired_speed = startup_speed_limit;
+    }
+
+    /* 保留第二问恢复轨迹时缓升、丢线时较快降速的处理。 */
+    if(state->base_speed < desired_speed)
+    {
+        state->base_speed += Q56_SPEED_UP_STEP;
+        if(state->base_speed > desired_speed)
+        {
+            state->base_speed = desired_speed;
+        }
+    }
+    else if(state->base_speed > desired_speed)
+    {
+        state->base_speed -= Q56_SPEED_DOWN_STEP;
+        if(state->base_speed < desired_speed)
+        {
+            state->base_speed = desired_speed;
+        }
+    }
+
+    state->pid_integral += error;
+    if(state->pid_integral > Q56_PID_INTEGRAL_LIMIT)
+    {
+        state->pid_integral = Q56_PID_INTEGRAL_LIMIT;
+    }
+    else if(state->pid_integral < -Q56_PID_INTEGRAL_LIMIT)
+    {
+        state->pid_integral = -Q56_PID_INTEGRAL_LIMIT;
+    }
+
+    derivative = (int16_t)(error - state->pid_last_error);
+    state->pid_last_error = error;
+
+    output = ((int32_t)Q56_PID_KP * error) +
+             ((int32_t)Q56_PID_KI * state->pid_integral) +
+             ((int32_t)Q56_PID_KD * derivative);
+    output /= Q56_PID_SCALE;
+
+    if(output > Q56_PID_OUTPUT_LIMIT)
+    {
+        output = Q56_PID_OUTPUT_LIMIT;
+    }
+    else if(output < -Q56_PID_OUTPUT_LIMIT)
+    {
+        output = -Q56_PID_OUTPUT_LIMIT;
+    }
+
+    /*
+     * 软启动尚未结束时，方向修正量也按当前基础速度同比减小。
+     * 避免低速起步阶段一侧车轮突然得到过大的目标速度。
+     */
+    if(startup_speed_limit < normal_speed)
+    {
+        output = (output * state->base_speed) / normal_speed;
+    }
+
+    /* 最终再限制一次，保证起步阶段左右轮目标速度都不会反转。 */
+    if(output > state->base_speed)
+    {
+        output = state->base_speed;
+    }
+    else if(output < -state->base_speed)
+    {
+        output = -state->base_speed;
+    }
+
+    *left_speed = (int16_t)(state->base_speed - output);
+    *right_speed = (int16_t)(state->base_speed + output);
 }
 
-void Xunji_Q5_Task(int16_t* left_speed, int16_t* right_speed)
-{  
+void Xunji_Q5_Reset(void)
+{
+    /* 第五问只清空自己的PID状态。 */
+    Xunji_Q56_ResetCore(&q5_track_state, Q5_START_SPEED);
+}
 
-    uint8_t bits = Xunji_Read_Bits();
+void Xunji_Q5_Task(
+    uint32_t elapsed_ms, int16_t* left_speed, int16_t* right_speed)
+{
+    Xunji_Q56_TaskCore(
+        elapsed_ms,
+        left_speed,
+        right_speed,
+        &q5_track_state,
+        Q5_NORMAL_SPEED,
+        Q5_LOST_SPEED,
+        Q5_START_SPEED,
+        Q5_START_RAMP_INTERVAL_MS);
+}
 
-    int16_t speed_error = 0;
-    if ((bits & (1U << 3)) != 0U) {speed_error = 3;}
-    else if ((bits & (1U << 4)) != 0U) {speed_error = -3;}
-    else if ((bits & (1U << 2)) != 0U) {speed_error = 5;}
-    else if ((bits & (1U << 5)) != 0U) {speed_error = -5;}
-    else if ((bits & (1U << 1)) != 0U) {speed_error = 8;}
-    else if ((bits & (1U << 6)) != 0U) {speed_error = -8;}
-    else if ((bits & (1U << 0)) != 0U) {speed_error = 15;}
-    else if ((bits & (1U << 7)) != 0U) {speed_error = -15;}
+void Xunji_Q6_Reset(void)
+{
+    /* 第六问只清空自己的PID状态。 */
+    Xunji_Q56_ResetCore(&q6_track_state, Q6_START_SPEED);
+}
 
-    *left_speed = XUNJI_FORWARD_5_SPEED - speed_error;
-    *right_speed = XUNJI_FORWARD_5_SPEED + speed_error;
+void Xunji_Q6_Task(
+    uint32_t elapsed_ms, int16_t* left_speed, int16_t* right_speed)
+{
+    Xunji_Q56_TaskCore(
+        elapsed_ms,
+        left_speed,
+        right_speed,
+        &q6_track_state,
+        Q6_NORMAL_SPEED,
+        Q6_LOST_SPEED,
+        Q6_START_SPEED,
+        Q6_START_RAMP_INTERVAL_MS);
+}
+
+void Xunji_Q4_Reset(void)
+{
+    /* 每次启动第四问时，都从速度0重新开始软启动。 */
+    q4_base_speed = 0;
+    q4_last_correction = 0;
+    q4_stop_requested = 0U;
+    q4_stop_ramp_started = 0U;
+    q4_stop_start_ms = 0U;
+    q4_stop_start_speed = 0;
+    Xunji_Q4_Debug = (Xunji_Q4Debug){0};
+}
+
+void Xunji_Q4_RequestStop(void)
+{
+    /*
+     * 第四问确认通过B点并继续直行一段时间后，由主循环调用一次。
+     * 收到请求后，基础速度每20ms降低1，直到平缓降为0。
+     */
+    q4_stop_requested = 1U;
+}
+
+uint8_t Xunji_Q4_Task(
+    uint32_t elapsed_ms, int16_t* left_speed, int16_t* right_speed)
+{
+    uint8_t bits;
+    uint8_t middle_state;
+    int16_t correction;
+    uint32_t ramp_steps;
+
+    if((left_speed == 0) || (right_speed == 0))
+    {
+        return 0U;
+    }
+
+    bits = Xunji_Read_Bits();
+    middle_state = (uint8_t)((bits >> 3) & 0x03U);
+
+    if(q4_stop_requested == 0U)
+    {
+        /*
+         * 基础速度从5开始，再按每150ms增加1，最多增加到25。
+         * 起始值5较小，不会让小车突然前冲，同时可以减少从0开始时
+         * 因电机静摩擦造成的按键后等待时间。
+         * 即使IMU读取、OLED或串口发送暂时阻塞主循环，软启动时间也不会变慢。
+         */
+        ramp_steps = Q4_START_SPEED +
+                     (elapsed_ms / Q4_START_RAMP_INTERVAL_MS);
+        if(ramp_steps > Q4_MAX_SPEED)
+        {
+            ramp_steps = Q4_MAX_SPEED;
+        }
+        q4_base_speed = (int16_t)ramp_steps;
+    }
+    else
+    {
+        /* 第一次处理停车请求时，记录软刹车开始时间和当时的速度。 */
+        if(q4_stop_ramp_started == 0U)
+        {
+            q4_stop_ramp_started = 1U;
+            q4_stop_start_ms = elapsed_ms;
+            q4_stop_start_speed = q4_base_speed;
+        }
+
+        ramp_steps = (elapsed_ms - q4_stop_start_ms) /
+                     Q4_BRAKE_RAMP_INTERVAL_MS;
+
+        if(ramp_steps >= (uint32_t)q4_stop_start_speed)
+        {
+            q4_base_speed = 0;
+        }
+        else
+        {
+            q4_base_speed = (int16_t)(
+                q4_stop_start_speed - (int16_t)ramp_steps);
+        }
+    }
+
+    /*
+     * 第四问直线方向只使用XJ4、XJ5：
+     * 只有XJ4为1时向一个方向修正，只有XJ5为1时向相反方向修正；
+     * 两路都为1表示位于1.8cm黑线中间，不修正；
+     * 两路都丢线时保持上一次修正方向找线，外侧六路不参与控制。
+     */
+    if(middle_state == 0x01U)
+    {
+        correction = Q4_TRACK_CORRECTION;
+        q4_last_correction = correction;
+    }
+    else if(middle_state == 0x02U)
+    {
+        correction = -Q4_TRACK_CORRECTION;
+        q4_last_correction = correction;
+    }
+    else if(middle_state == 0x03U)
+    {
+        correction = 0;
+    }
+    else
+    {
+        correction = q4_last_correction;
+    }
+
+    /*
+     * 低速时如果直接使用±3修正，左右目标速度比例会相差很大，
+     * 两个轮子克服静摩擦的时刻不同，会造成起步突然偏转。
+     * 因此让修正量随基础速度逐渐增加：速度25时才使用完整的±3。
+     */
+    correction = (int16_t)(
+        ((int32_t)correction * q4_base_speed) / Q4_MAX_SPEED);
+
+    /* 再做一次限幅，保证软启动过程中两个车轮都不会反转。 */
+    if(correction > q4_base_speed)
+    {
+        correction = q4_base_speed;
+    }
+    else if(correction < -q4_base_speed)
+    {
+        correction = -q4_base_speed;
+    }
+
+    *left_speed = (int16_t)(q4_base_speed - correction);
+    *right_speed = (int16_t)(q4_base_speed + correction);
+
+    Xunji_Q4_Debug.sensor_bits = bits;
+    Xunji_Q4_Debug.middle_state = middle_state;
+    Xunji_Q4_Debug.base_speed = q4_base_speed;
+    Xunji_Q4_Debug.correction = correction;
+    Xunji_Q4_Debug.left_target = *left_speed;
+    Xunji_Q4_Debug.right_target = *right_speed;
+
+    /* 软刹车已经降到0时返回1；当前通过B点的流程不会触发此返回值。 */
+    return (uint8_t)(q4_stop_requested && (q4_base_speed == 0));
 }
 
 static void MyXunji_ResetPidState(void)

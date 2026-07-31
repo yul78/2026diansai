@@ -49,49 +49,29 @@ static int16_t F103_Trans_AccRawToMg(int16 raw_value)
 
 
 /*
- * 发送已经换算成mg的Y轴加速度。
- *
- * 数据帧共4字节：
- * 帧头、Y低字节、Y高字节、异或校验。
+ * 唯一对外发送接口。
+ * 读取IMU963的Y轴加速度，并发送固定6字节数据帧：
+ * 帧头、题号、指定位置、Y低字节、Y高字节、异或校验。
  */
-void F103_Trans_SendAccelerationMg(int16_t acc_y_mg)
+void F103_Trans_SendData(
+    uint8_t question_number, uint8_t target_position_mm)
 {
+    int16_t acc_y_mg;
     uint8_t acc_y_low;
     uint8_t acc_y_high;
     uint8_t checksum;
 
-    /*
-     * 将int16_t按照小端格式拆分。
-     * 串口先发送低字节，再发送高字节。
-     */
-    acc_y_low =
-        (uint8_t)((uint16_t)acc_y_mg & 0x00FFU);
+    /* F103只需要处理第3、4、5、6题，其他题不发送。 */
+    if((question_number < 3U) || (question_number > 6U))
+    {
+        return;
+    }
 
-    acc_y_high =
-        (uint8_t)(((uint16_t)acc_y_mg >> 8) & 0x00FFU);
-
-    /*
-     * 帧头和两个数据字节直接异或。
-     */
-    checksum =
-        F103_TRANS_FRAME_HEADER ^ acc_y_low ^ acc_y_high;
-
-    F103_Trans_SendByte(F103_TRANS_FRAME_HEADER);
-    F103_Trans_SendByte(acc_y_low);
-    F103_Trans_SendByte(acc_y_high);
-    F103_Trans_SendByte(checksum);
-}
-
-
-/*
- * 读取IMU963的加速度寄存器，只换算并发送Y轴。
- *
- * 该函数不会读取陀螺仪，也不会进行姿态角解算。
- * 建议在主循环中每20ms调用一次，不要放在定时器中断中执行。
- */
-void F103_Trans_SendImu963Acceleration(void)
-{
-    int16_t acc_y_mg;
+    /* 只有第六问使用指定位置，其他题的数据帧中该字节固定为0。 */
+    if(question_number != 6U)
+    {
+        target_position_mm = 0U;
+    }
 
     /*
      * 一次读取X、Y、Z三个加速度寄存器，
@@ -102,5 +82,21 @@ void F103_Trans_SendImu963Acceleration(void)
     acc_y_mg =
         F103_Trans_AccRawToMg(imu963ra_acc_y);
 
-    F103_Trans_SendAccelerationMg(acc_y_mg);
+    /* int16_t按照小端格式拆分，先发送低字节，再发送高字节。 */
+    acc_y_low = (uint8_t)((uint16_t)acc_y_mg & 0x00FFU);
+    acc_y_high =
+        (uint8_t)(((uint16_t)acc_y_mg >> 8) & 0x00FFU);
+
+    checksum = F103_TRANS_FRAME_HEADER ^
+               question_number ^
+               target_position_mm ^
+               acc_y_low ^
+               acc_y_high;
+
+    F103_Trans_SendByte(F103_TRANS_FRAME_HEADER);
+    F103_Trans_SendByte(question_number);
+    F103_Trans_SendByte(target_position_mm);
+    F103_Trans_SendByte(acc_y_low);
+    F103_Trans_SendByte(acc_y_high);
+    F103_Trans_SendByte(checksum);
 }

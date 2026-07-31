@@ -19,6 +19,10 @@ extern volatile uint8_t at8236PID_update_flag;
 extern volatile uint8_t xunji_update_flag;
 /* XJ4、XJ5、XJ6检测到停车线后由10ms中断锁存为1。 */
 extern volatile uint8_t q2_stop_line_flag;
+/* 第五、六问检测到A点横向启停线后，由10ms中断锁存。 */
+extern volatile uint8_t q56_pass_line_flag;
+/* 检测到A线时的system_tick_ms，用于计算准确的通过A点时间。 */
+extern volatile uint32_t q56_pass_line_tick_ms;
 /* system_tick_ms由1ms定时器中断累加，供题目运行计时使用。 */
 extern volatile uint32_t system_tick_ms;
 
